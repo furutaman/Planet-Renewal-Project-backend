@@ -181,20 +181,10 @@ cols = 80
 type = text
 size = 10
 
-[recommendRankUpdateDate]
-type = text
-size = 80
-date = true
-dateFormat = yyyy/mm/dd
-startDate = '1970/01/01'
-
 [popularRank]
 type = text
 size = 10
 
-[popularRankUpdateDate]
+[custom_meta_views]
 type = text
-size = 80
-date = true
-dateFormat = yyyy/mm/dd
-startDate = '1970/01/01'
+size = 20

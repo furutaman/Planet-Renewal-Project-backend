@@ -1,0 +1,21 @@
+[recommendRankUpdateDate]
+type = text
+size = 80
+date = true
+dateFormat = yyyy/mm/dd
+startDate = '1970/01/01'
+
+[popularRankUpdateDate]
+type = text
+size = 80
+date = true
+dateFormat = yyyy/mm/dd
+startDate = '1970/01/01'
+
+[newRankUpdateDate]
+type = text
+size = 80
+date = true
+dateFormat = yyyy/mm/dd
+startDate = '1970/01/01'
+

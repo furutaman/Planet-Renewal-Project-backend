@@ -5,6 +5,8 @@ add_theme_support('post-thumbnails');
 add_image_size("thumbnails_438x328", "438px", "328px", false);
 // srcset属性が無効化（削除）
 add_filter( 'wp_calculate_image_srcset_meta', '__return_null' );
+// adminber削除
+add_filter('show_admin_bar', '__return_false');
 /**
  * スマートフォンを判別
  * @return スマホならtrue それ以外false
@@ -153,7 +155,7 @@ function get_release_status($post_id){
 		}
 	}
 	else if( $release_status == '2' ){
-		return '<a class="label_small label_pre">βテスト中</a>';
+		return '<span class="label_small label_pre">βテスト中</span>';
 	}
 	else if( $release_status == '3' ){
 		return '<span class="label_small label_pre">事前登録中</span>';
@@ -162,10 +164,10 @@ function get_release_status($post_id){
 		return '<span class="label_small label_pre">サービス終了</span>';
 	}
 	else if( $release_status == '5' ){
-		return '<a class="label_small label_pre">休止中</a>';
+		return '<span class="label_small label_pre">休止中</span>';
 	}
 	else if( $release_status == '6' ){
-		return '<a class="label_small label_pre">リリース予定</a>';
+		return '<span class="label_small label_pre">リリース予定</span>';
 	}
 
 	return "";
@@ -216,6 +218,82 @@ function get_release_status_post($post_id){
 
 	return "";
 }
+
+/**
+ * カスタムフィールドから「リリースステータス」を取得（カテゴリ用）
+ * @param 記事ID
+ * @return リリースステータス
+*/
+function get_release_status_cat($post_id){
+	$release_status = get_post_meta($post_id , 'releaseStatus' ,true);
+
+
+	if( $release_status == '1' ){
+		// リリース日
+		$release_date = get_post_meta($post_id , 'gameRelease' ,true);
+		//echo $release_date.'<br>';
+		// 半年前
+		$six_months_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-6 month"));
+		//echo $six_months_ago.'<br>';
+		// 一年前
+		$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
+		//echo $one_year_ago.'<br>';
+
+		// リリース日が半年以内
+		if(strtotime($release_date) > strtotime($six_months_ago)){
+			return '<span class="u-mlm label_large label_new">新作</span>';
+		}
+		// リリース日が1年以内
+		else if(strtotime($release_date) > strtotime($one_year_ago)){
+			return '<span class="u-mlm label_large label_new">準新作</span>';
+		}
+	}
+	else if( $release_status == '2' ){
+		return '<span class="u-mlm label_large label_pre">βテスト中</span>';
+	}
+	else if( $release_status == '3' ){
+		return '<span class="u-mlm label_large label_pre">サービス終了</span>';
+	}
+	else if( $release_status == '4' ){
+		return '<span class="u-mlm label_large label_pre">休止中</span>';
+	}
+	else if( $release_status == '5' ){
+		return '<span class="u-mlm label_large label_pre">リリース予定</span>';
+	}
+
+	return "";
+}
+
+/**
+ * 記事が所属しているカテゴリを取得
+ * @param kind 1=すべて、2=ブラウザゲーム以外、3=ブラウザゲームのみ
+ * @return 料金体系名称
+*/
+function get_categorys_link($kind){
+
+	$categorys = get_the_category();
+	$cat_return = "";
+
+	foreach ($categorys as $category){
+		if ($kind == 2) {
+			if($category->slug == "browser-games"){
+				continue;
+			}
+		}
+		else if ($kind == 3) {
+			if($category->slug != "browser-games"){
+				continue;
+			}
+		}
+		$cat_return = $cat_return.'<a href="'.get_category_link( $category->term_id ).'" class="label_large">'.$category->cat_name.'</a>';
+
+	}
+
+	//echo htmlspecialchars($cat_return);
+	
+	return $cat_return;
+}
+
 
 /**
  * カスタムフィールドから「最近のトピックスステータス」を取得
@@ -274,20 +352,235 @@ function get_game_link($post_id){
 
 
 }
-// /**
-//  * カスタムフィールドから「youtube ID」を取得
-//  * @param 記事ID
-//  * @return youtube ID
-// */
-// function get_youtube_id($post_id){
-// 	$youtube_id = get_post_meta($post_id , 'youtubeId' ,true);
 
-// 	if(empty($imgid)){
-// 		return null;
-// 	}
+/**
+ * ゲットパラメータで、適したタイトルを返却する
+ * sort popullar=閲覧数, new=新着 指定なし=おすすめ
+*/
+function get_cat_title(){
 
-// 	return $youtube_id;
-// }
+	$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
+	$sort = htmlspecialchars($sort, ENT_QUOTES);
+
+	$title = "";
+
+	// 閲覧数順
+	if($sort == "popular"){
+		$title = "閲覧数";
+	}
+	// 新作順
+	else if($sort == "new"){
+		$title = "新着";
+	}
+	else{
+		$title = "おすすめ";
+	}
+
+	return $title;
+
+}
+
+/**
+ * ゲットパラメータで、適したタブにクラスを付与
+ * active popullar=閲覧数, new=新着 recommend=おすすめ
+*/
+function get_cat_active_class($active){
+
+	$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
+	$sort = htmlspecialchars($sort, ENT_QUOTES);
+
+	$class = 'class="tab_active"';
+
+	// 閲覧数順
+	if($sort == "popular" && $active == "popular"){
+		return $class;
+	}
+	// 新作順
+	else if($sort == "new" && $active == "new"){
+		return $class;
+	}
+	// おすすめ順
+	else if($sort == "" && $active == "recommend"){
+		return $class;
+	}
+
+	return "";
+
+}
+
+/**
+ * 各順位の更新日を返却
+ * todo:ID決め打ち
+*/
+function get_rank_update_date(){
+
+	$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
+	$sort = htmlspecialchars($sort, ENT_QUOTES);
+
+	// 閲覧数順
+	if($sort == "popular"){
+		return get_post_meta(32717, 'popularRankUpdateDate', true);
+	}
+	// 新作順
+	else if($sort == "new"){
+		return get_post_meta(32717, 'newRankUpdateDate', true);
+	}
+	
+	// おすすめ順
+	return get_post_meta(32717, 'recommendRankUpdateDate', true);
+
+}
+
+
+/**
+ * カテゴリ一覧 sort popullar=閲覧数, new=新着 指定なし=おすすめ
+*/
+function pre_get_cat_list($query){
+
+	if ( is_admin() || ! $query->is_main_query() ){
+		return;
+	}
+
+	if ( $query->is_category() ) {
+
+		$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
+		$sort = htmlspecialchars($sort, ENT_QUOTES);
+
+		// 閲覧数順
+		if($sort == "popular"){
+			$query->set( 'orderby', 'meta_value_num' );
+			$query->set( 'meta_key', 'custom_meta_views' );
+			$query->set( 'order', 'DESC' );
+		}
+		// 新作順
+		else if($sort == "new"){
+			$query->set( 'orderby', 'DATE' );
+			$query->set( 'meta_key', 'gameRelease' );
+			$query->set( 'order', 'DESC' );
+		}
+		else{
+			$query->set( 'orderby', 'meta_value_num' );
+			$query->set( 'meta_key', 'recommendRank' );
+			$query->set( 'order', 'ASC' );
+		}
+		
+		return;
+	}
+}
+
+
+add_action( 'pre_get_posts', 'pre_get_cat_list' );
+
+
+/**
+ * 閲覧数を保存する
+*/
+function update_custom_meta_views() {
+    global $post;
+    if ( 'publish' === get_post_status( $post ) && is_single() ) {
+    	$views = intval( get_post_meta( $post->ID, 'custom_meta_views', true ) );
+    	update_post_meta( $post->ID, 'custom_meta_views', ( $views + 1 ) );
+    }
+}
+add_action( 'wp_head', 'update_custom_meta_views' );
+
+
+remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+remove_action( 'wp_print_styles', 'print_emoji_styles' );
+
+remove_action('wp_head', 'wp_shortlink_wp_head');
+remove_action('wp_head', 'wp_shortlink_wp_head');
+
+remove_action('wp_head','rest_output_link_wp_head');
+remove_action('wp_head','wp_oembed_add_discovery_links');
+remove_action('wp_head','wp_oembed_add_host_js');
+
+remove_action('wp_head', 'rsd_link');
+remove_action('wp_head','wlwmanifest_link');
+
+remove_action('wp_head', 'rel_canonical');
+remove_action('wp_head', 'wp_generator');
+
+add_filter( 'wp_calculate_image_srcset_meta', '__return_null' );
+
+
+function my_scripts_method() {
+  wp_deregister_script('jquery');
+}
+add_action( 'wp_enqueue_scripts', 'my_scripts_method' );
+
+
+///////////////////////////////////////
+// Wordpressデフォルトのnext/prev出力動作を停止
+///////////////////////////////////////
+remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
+
+///////////////////////////////////////
+//ページネーション（一覧ページ）と分割ページ（マルチページ）タグを出力
+///////////////////////////////////////
+function rel_next_prev_link_tags() {
+  if(is_single() || is_page()) {
+      //1ページを複数に分けた分割ページ（マルチページ）でのタグ出力
+    global $wp_query;
+    $multipage = check_multi_page();
+    if($multipage[0] > 1) {
+      $prev = generate_multipage_url('prev');
+      $next = generate_multipage_url('next');
+      if($prev) {
+        echo '<link rel="prev" href="'.$prev.'" />'.PHP_EOL;
+      }
+      if($next) {
+        echo '<link rel="next" href="'.$next.'" />'.PHP_EOL;
+      }
+    }
+  } else{
+    //トップページやカテゴリページなどのページネーションでのタグ出力
+    global $paged;
+    if ( get_previous_posts_link() ){
+      echo '<link rel="prev" href="'.get_pagenum_link( $paged - 1 ).'" />'.PHP_EOL;
+    }
+    if ( get_next_posts_link() ){
+      echo '<link rel="next" href="'.get_pagenum_link( $paged + 1 ).'" />'.PHP_EOL;
+    }
+  }
+}
+//適切なページのヘッダーにnext/prevを表示
+add_action( 'wp_head', 'rel_next_prev_link_tags' );
+
+//分割ページ（マルチページ）URLの取得
+//参考ページ：http://seophp.net/wordpress-fix-rel-prev-and-rel-next-without-plugin/
+function generate_multipage_url($rel='prev') {
+  global $post;
+  $url = '';
+  $multipage = check_multi_page();
+  if($multipage[0] > 1) {
+    $numpages = $multipage[0];
+    $page = $multipage[1] == 0 ? 1 : $multipage[1];
+    $i = 'prev' == $rel? $page - 1: $page + 1;
+    if($i && $i > 0 && $i <= $numpages) {
+      if(1 == $i) {
+        $url = get_permalink();
+      } else {
+        if ('' == get_option('permalink_structure') || in_array($post->post_status, array('draft', 'pending'))) {
+          $url = add_query_arg('page', $i, get_permalink());
+        } else {
+          $url = trailingslashit(get_permalink()).user_trailingslashit($i, 'single_paged');
+        }
+      }
+    }
+  }
+  return $url;
+}
+
+//分割ページ（マルチページ）かチェックする
+function check_multi_page() {
+  $num_pages    = substr_count(
+      $GLOBALS['post']->post_content,
+      '<!--nextpage-->'
+  ) + 1;
+  $current_page = get_query_var( 'page' );
+  return array ( $num_pages, $current_page );
+}
 ?>
 <?php
 /**

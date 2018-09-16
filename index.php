@@ -26,8 +26,6 @@
 	);
 	$top_query = new WP_Query($top_query_args);
 
-	//var_dump($the_query);
-	//echo $top_query->request;
 	if($top_query->have_posts()):
 		// ナンバリング
 		$cnt=1;
@@ -117,7 +115,7 @@
 	
 	// ナンバリング
 	$cnt=1;
-	while($new_query->have_posts()): $new_query->the_post();
+	if($new_query->have_posts()): while($new_query->have_posts()): $new_query->the_post();
 		if($cnt == 1):
 ?>
 		<section>
@@ -148,17 +146,14 @@
 				</li>
 	<?php 
 		$cnt++;
-	endwhile;
+	endwhile; endif;
+	wp_reset_postdata();
 	?>
 			</ol>
 			<div class="wrap_btn_all-cat">
 				<a href="#">全てのランキングを見る</a>
 			</div>
 		</section>
-	<?php 
-		wp_reset_postdata();
-	?>
-
 	<?php
 		// 一覧に表示するカテゴリをセット
 		$cat_lists = array('browser-games','mmorpg','fps','action');
@@ -236,14 +231,13 @@
 		'meta_key' => 'topicsStatus',
 		'meta_value' => 'null',
 		'meta_compare' => '!=',
-		
 		'orderby' => 'topicsUpdateDate',
 		'order' => 'DESC'
 	);
 	$right_query = new WP_Query($right_query_args);
 	// ナンバリング
 	$cnt=1;
-	while($right_query->have_posts()): $right_query->the_post();
+	if($right_query->have_posts()): while($right_query->have_posts()): $right_query->the_post();
 		if($cnt == 1):
 ?>
 		<section>
@@ -269,7 +263,7 @@
 					<p><a href="<?php echo the_permalink($post->ID); ?>" class="u-mrs"><?php echo get_post_meta($post->ID, 'topicsText', true); ?></a></p>
 					<div>
 				<?php if( get_pc_sp($post->ID) != null): ?>
-						<span class="label_small label_device">PC</span>
+						<span class="label_small label_device"><?php echo get_pc_sp($post->ID);?></span>
 				<?php endif;?>
 						<a href="#" class="label_small"><?php echo $cat_name; ?></a>
 					</div>
@@ -280,7 +274,7 @@
 			</div>
 <?php 
 	$cnt++;
-	endwhile;
+	endwhile; endif;
 ?>
 		</section>
 <?php 
