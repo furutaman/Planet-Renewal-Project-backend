@@ -15,13 +15,16 @@
 <meta property="og:url" content="<?php echo home_url(); ?>">
 <meta name="keywords" content="">
 <meta name="description" content="無料で遊べるPCオンラインゲームの2018年最新おすすめランキングや、実際にプレイしてレビュー紹介記事を掲載しています。新作や人気タイトルを中心にMMORPGやFPS／TPS、ブラウザゲームなど協力や対戦が楽しめるネトゲを紹介しているサイトです。">
+
+
 <?php elseif(is_single()): ?>
 <title><?php wp_title(''); ?>｜オンラインゲームPLANET</title>
 <meta property="og:url" content="<?php echo get_permalink(); ?>">
 <meta name="keywords" content="<?php echo get_post_meta($post->ID, 'metaKeyword', true);?>">
 <meta name="description" content="<?php echo get_post_meta($post->ID, 'metaDescription', true);?>">
-<?php
-elseif(is_category()):
+
+
+<?php elseif(is_category()):
 	$cat_info = get_category( $cat );
 	$cat_data = get_option('catTitle_'.intval($cat_info->term_id));
 	if($cat_data['title_text']):
@@ -32,12 +35,15 @@ elseif(is_category()):
 			$pagenum = get_query_var('paged'); //ページ番号の取得
 ?>
 <title><?php echo $pagenum .'ページ目' . '　' .$cat_data['title_text'] ; //titleタグにページ番号を追加 ?></title>
-<?php endif; ?>
+<?php 	endif; ?>
 <meta property="og:url" content="<?php echo get_category_link($cat); ?>">
 <meta name="keywords" content="<?php ?>">
 <meta name="description" content="<?php echo $cat_info->description;?>">
-
 <?php endif; ?>
+
+
+<?php else:?>
+<title><?php wp_title(''); ?>｜オンラインゲームPLANET</title>
 <?php endif; ?>
 
 <meta name="author" content="プラネットメディア株式会社">
