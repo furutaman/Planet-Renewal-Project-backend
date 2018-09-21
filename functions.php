@@ -174,6 +174,25 @@ function get_release_status($post_id){
 }
 
 /**
+ * カスタムフィールドから「リリースステータス」を取得
+ * @param 記事ID
+ * @return リリースステータス
+*/
+function get_release_status2($post_id){
+	$release_status = get_post_meta($post_id , 'releaseStatus' ,true);
+
+	if( $release_status == '2' ){
+		return '<div class="label_topic_beta">βテスト中</div>';
+	}
+	else if( $release_status == '3' ){
+		return '<div class="label_topic_jizen">事前登録中</div>';
+	}
+	
+
+	return "";
+}
+
+/**
  * カスタムフィールドから「リリースステータス」を取得（記事用）
  * @param 記事ID
  * @return リリースステータス
@@ -446,23 +465,60 @@ function pre_get_cat_list($query){
 		$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
 		$sort = htmlspecialchars($sort, ENT_QUOTES);
 
+		// 新作カテゴリ
+		if($query->is_category('new')){
+			// 一年前日付を取得
+			$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
+			$query->set('meta_query',
+				array(
+					'relation' => 'OR',
+					array(
+						'key' => 'releaseStatus',
+						'value' => array('2','3','4','5','6',),
+						'compare' => 'IN',
+					),
+					array(
+						'relation' => 'AND',
+						array(
+							'key' => 'releaseStatus',
+							'value' => '1',
+							'compare' => '=',
+						),
+						array(
+							'key' => 'gameRelease',
+							'value' => $one_year_ago,
+							'compare' => '>=',
+						)
+					)
+				)
+			);
+		}
+		
+
 		// 閲覧数順
 		if($sort == "popular"){
 			$query->set( 'orderby', 'meta_value_num' );
-			$query->set( 'meta_key', 'custom_meta_views' );
-			$query->set( 'order', 'DESC' );
+			$query->set( 'meta_key', 'recommendRank' );
+			$query->set( 'order', 'ASC' );
+			$query->set( 'meta_value', 'null' );
+			$query->set( 'meta_compare', '!=' );
 		}
 		// 新作順
 		else if($sort == "new"){
-			$query->set( 'orderby', 'DATE' );
+			$query->set( 'orderby', 'meta_value' );
 			$query->set( 'meta_key', 'gameRelease' );
 			$query->set( 'order', 'DESC' );
+			$query->set( 'meta_value', 'null' );
+			$query->set( 'meta_compare', '!=' );
 		}
 		else{
 			$query->set( 'orderby', 'meta_value_num' );
-			$query->set( 'meta_key', 'recommendRank' );
+			$query->set( 'meta_key', 'popularRank' );
 			$query->set( 'order', 'ASC' );
+			$query->set( 'meta_value', 'null' );
+			$query->set( 'meta_compare', '!=' );
 		}
+
 		
 		return;
 	}
@@ -473,16 +529,42 @@ add_action( 'pre_get_posts', 'pre_get_cat_list' );
 
 
 /**
+ * 開始日と終了日を取得する
+ * @param 記事ID
+*/
+function get_start_end_date($post_id){
+
+	// 開始日（表示用）
+	$start_date = get_post_meta($post_id, 'preStartDate', true);
+	// 開始日（タグ用）
+	$start_date_replace = str_replace('/', '-',$start_date);
+	// 終了日（表示用）
+	$end_date = get_post_meta($post_id, 'preEndDate', true);
+	// 終了日（タグ用）
+	$end_date_replace = str_replace('/', '-',$end_date);
+
+	// 開始日と終了日のどちらも入力されていた場合
+	if($start_date && $end_date){
+		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>〜<time datetime="'.$end_date_replace.'">'.$end_date.'</time>';
+	}
+	else{
+		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>';
+	}
+
+}
+
+
+/**
  * 閲覧数を保存する
 */
-function update_custom_meta_views() {
-    global $post;
-    if ( 'publish' === get_post_status( $post ) && is_single() ) {
-    	$views = intval( get_post_meta( $post->ID, 'custom_meta_views', true ) );
-    	update_post_meta( $post->ID, 'custom_meta_views', ( $views + 1 ) );
-    }
-}
-add_action( 'wp_head', 'update_custom_meta_views' );
+// function update_custom_meta_views() {
+//     global $post;
+//     if ( 'publish' === get_post_status( $post ) && is_single() ) {
+//     	$views = intval( get_post_meta( $post->ID, 'custom_meta_views', true ) );
+//     	update_post_meta( $post->ID, 'custom_meta_views', ( $views + 1 ) );
+//     }
+// }
+// add_action( 'wp_head', 'update_custom_meta_views' );
 
 
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );

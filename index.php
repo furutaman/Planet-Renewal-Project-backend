@@ -15,26 +15,28 @@
 
 <!-- おすすめトップ10 -->
 <?php
-	$top_query_args = Array(
-		'post_type' => 'post',
-		'posts_per_page' => 10,
-		'meta_key' => 'popularRank',
-		'meta_value' => 'null',
-		'meta_compare' => '!=',
-		'orderby' => 'meta_value_num',
-		'order' => 'ASC'
-	);
-	$top_query = new WP_Query($top_query_args);
+/**
+ * おすすめオンラインゲームTOP10
+*/
+$top_query_args = Array(
+	'post_type' => 'post',
+	'posts_per_page' => 10,
+	'meta_key' => 'popularRank',
+	'meta_value' => 'null',
+	'meta_compare' => '!=',
+	'orderby' => 'meta_value_num',
+	'order' => 'ASC'
+);
+$top_query = new WP_Query($top_query_args);
 
-	if($top_query->have_posts()):
-		// ナンバリング
-		$cnt=1;
-		while($top_query->have_posts()): $top_query->the_post();
-			if($cnt == 1):
-				// 更新日（表示用）
-				$popular_update_date = get_post_meta($post->ID, 'popularRankUpdateDate', true);
-				// 更新日（タグ用）
-				$popular_update_date_replace = str_replace('/', '-',$popular_update_date);
+// ナンバリング
+$cnt=1;
+if($top_query->have_posts()): while($top_query->have_posts()): $top_query->the_post();
+		if($cnt == 1):
+			// 更新日（表示用）
+			$popular_update_date = get_post_meta($post->ID, 'popularRankUpdateDate', true);
+			// 更新日（タグ用）
+			$popular_update_date_replace = str_replace('/', '-',$popular_update_date);
 ?>
 
 	<div class="wrap-top10 u-clearfix">
@@ -45,26 +47,26 @@
 		</div>
 		<ol>
 			
-		<?php
-			endif;
-			// メインカテゴリ
-			$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-			$cat_name = $cat_obj->cat_name;
+	<?php
+		endif;
+		// メインカテゴリ
+		$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
+		$cat_name = $cat_obj->cat_name;
 
-			// TOP10用画像取得
-			$top10_image = wp_get_attachment_image_src(get_post_meta($post->ID,'top10Image', true),'thumbnail');
-			if($top10_image == false){
-				$top10_image[0] = get_the_post_thumbnail_url( get_the_ID(), 'thumbnails_438x328' );
-			}
-		?>
+		// TOP10用画像取得
+		$top10_image = wp_get_attachment_image_src(get_post_meta($post->ID,'top10Image', true),'thumbnail');
+		if($top10_image == false){
+			$top10_image[0] = get_the_post_thumbnail_url( get_the_ID(), 'thumbnails_438x328' );
+		}
+	?>
 
 			<li><a href="<?php the_permalink(); ?>"><img src="<?php echo $top10_image[0] ?>" width="100%" /><span class="number"><?php echo $cnt ?></span><span class="label"><?php echo $cat_name?></span><span class="text"><span class="u-fs-13"><?php echo get_post_meta($post->ID, 'gameName', true); ?></span><br><?php echo get_post_meta($post->ID, 'top10Text', true); ?></span></a></li>
 
 <?php
-			$cnt++;
-		endwhile;
-	endif;
-	wp_reset_postdata();
+		$cnt++;
+	endwhile;
+endif;
+wp_reset_postdata();
 ?>
 		</ol>
 	</div><!-- /wrap-top10 -->
@@ -76,50 +78,118 @@
 	<!-- 左カラム -->
 	<div class="left-column">
 <?php
-	// 一年前日付を取得
-	$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
-	//　カテゴリの数分ループ
-	$new_query_args = Array(
-		// 'post_type' => 'post',
+// 一年前日付を取得
+$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
+
+/**
+ * 新作オンラインゲームおすすめランキング
+*/
+$new_query_args = Array(
+	'post_type' => 'post',
+	'posts_per_page' => 3,
+	'meta_key' => 'popularRank',
+	'meta_value' => 'null',
+	'meta_compare' => '!=',
+	'meta_query' => array(
+		'relation' => 'OR',
+		array(
+			'key' => 'releaseStatus',
+			'value' => array('2','3','4','5','6',),
+			'compare' => 'IN',
+		),
+		array(
+			'relation' => 'AND',
+			array(
+				'key' => 'releaseStatus',
+				'value' => '1',
+				'compare' => '=',
+			),
+			array(
+				'key' => 'gameRelease',
+				'value' => $one_year_ago,
+				'compare' => '>=',
+			)
+		)
+	),
+	'orderby' => 'meta_value_num',
+	'order' => 'ASC'
+);
+	
+$new_query = new WP_Query($new_query_args);
+
+
+// ナンバリング
+$cnt=1;
+if($new_query->have_posts()): while($new_query->have_posts()): $new_query->the_post();
+	if($cnt == 1):
+?>
+		<section>
+			<h2>新作オンラインゲームおすすめランキング</h2>
+		<ol class="wrap_top3">
+	<?php
+		endif;
+
+		// メインカテゴリ
+		$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
+		$cat_name = $cat_obj->cat_name;
+	?>
+
+				<li>
+					<a href="<?php the_permalink(); ?>" class="top3_thumb"><img src="<?php the_post_thumbnail_url('thumbnails_438x328'); ?>" width="100%"><span class="number"><?php echo $cnt; ?></span></a>
+					<h3><a href="<?php the_permalink(); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
+					<div>
+						<?php echo get_release_status($post->ID); ?>
+						<?php if( get_pc_sp($post->ID) != null): ?>
+							<span class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
+						<?php endif; ?>
+						<?php if( get_price_tag($post->ID) != null): ?>
+							<span class="label_small"><?php echo get_price_tag($post->ID); ?></span>
+						<?php endif; ?>
+						<a href="#" class="label_small"><?php echo $cat_name ?></a>
+					</div>
+					<p><a href="<?php the_permalink(); ?>"><?php echo get_post_meta($post->ID, 'metaDescription', true);?></a></p>
+				</li>
+<?php 
+	$cnt++;
+endwhile; endif;
+wp_reset_postdata();
+?>
+			</ol>
+			<div class="wrap_btn_all-cat">
+				<a href="#">全てのランキングを見る</a>
+			</div>
+		</section>
+<?php
+// 一覧に表示するカテゴリをセット
+$cat_lists = array('browser-games','mmorpg','fps','action');
+
+/**
+ * カテゴリのおすすめランキング
+*/
+foreach ($cat_lists as $cat_list):
+	$cat_query_args = Array(
+		'category_name' => $cat_list,
+		'post_type' => 'post',
 		'posts_per_page' => 3,
 		'meta_key' => 'popularRank',
 		'meta_value' => 'null',
 		'meta_compare' => '!=',
-		'meta_query' => array(
-			'relation' => 'OR',
-			array(
-				'key' => 'releaseStatus',
-				'value' => array('2','3','4','5','6',),
-				'compare' => 'IN',
-			),
-			array(
-				'relation' => 'AND',
-				array(
-					'key' => 'releaseStatus',
-					'value' => '1',
-					'compare' => '=',
-				),
-				array(
-					'key' => 'gameRelease',
-					'value' => $one_year_ago,
-					'compare' => '>=',
-				)
-			)
-		),
 		'orderby' => 'meta_value_num',
 		'order' => 'ASC'
 	);
-		
-	$new_query = new WP_Query($new_query_args);
+	$cat_query = new WP_Query($cat_query_args);
 
+	// カテゴリ名
+	$cat_list_obj = get_category_by_slug($cat_list);
+	$cat_list_name = $cat_list_obj->cat_name;
 	
 	// ナンバリング
 	$cnt=1;
-	if($new_query->have_posts()): while($new_query->have_posts()): $new_query->the_post();
+	while($cat_query->have_posts()): $cat_query->the_post();
 		if($cnt == 1):
 ?>
 		<section>
-			<h2>新作オンラインゲームおすすめランキング</h2>
+			<h2><?php echo $cat_list_name ?>おすすめランキング</h2>
 			<ol class="wrap_top3">
 		<?php
 			endif;
@@ -144,115 +214,66 @@
 					</div>
 					<p><a href="<?php the_permalink(); ?>"><?php echo get_post_meta($post->ID, 'metaDescription', true);?></a></p>
 				</li>
-	<?php 
-		$cnt++;
-	endwhile; endif;
-	wp_reset_postdata();
-	?>
+<?php 
+			$cnt++;
+		endwhile;
+?>
 			</ol>
 			<div class="wrap_btn_all-cat">
 				<a href="#">全てのランキングを見る</a>
 			</div>
 		</section>
-	<?php
-		// 一覧に表示するカテゴリをセット
-		$cat_lists = array('browser-games','mmorpg','fps','action');
-
-		//　カテゴリの数分ループ
-		foreach ($cat_lists as $cat_list):
-			$cat_query_args = Array(
-				'category_name' => $cat_list,
-				'post_type' => 'post',
-				'posts_per_page' => 3,
-				'meta_key' => 'popularRank',
-				'meta_value' => 'null',
-				'meta_compare' => '!=',
-				'orderby' => 'meta_value_num',
-				'order' => 'ASC'
-			);
-			$cat_query = new WP_Query($cat_query_args);
-
-			// カテゴリ名
-			$cat_list_obj = get_category_by_slug($cat_list);
-			$cat_list_name = $cat_list_obj->cat_name;
-			
-			// ナンバリング
-			$cnt=1;
-			while($cat_query->have_posts()): $cat_query->the_post();
-				if($cnt == 1):
-	?>
-		<section>
-			<h2><?php echo $cat_list_name ?>おすすめランキング</h2>
-			<ol class="wrap_top3">
-			<?php
-				endif;
-
-				// メインカテゴリ
-				$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-				$cat_name = $cat_obj->cat_name;
-			?>
-
-				<li>
-					<a href="<?php the_permalink(); ?>" class="top3_thumb"><img src="<?php the_post_thumbnail_url('thumbnails_438x328'); ?>" width="100%"><span class="number"><?php echo $cnt; ?></span></a>
-					<h3><a href="<?php the_permalink(); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
-					<div>
-						<?php echo get_release_status($post->ID); ?>
-						<?php if( get_pc_sp($post->ID) != null): ?>
-							<span class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
-						<?php endif; ?>
-						<?php if( get_price_tag($post->ID) != null): ?>
-							<span class="label_small"><?php echo get_price_tag($post->ID); ?></span>
-						<?php endif; ?>
-						<a href="#" class="label_small"><?php echo $cat_name ?></a>
-					</div>
-					<p><a href="<?php the_permalink(); ?>"><?php echo get_post_meta($post->ID, 'metaDescription', true);?></a></p>
-				</li>
-	<?php 
-				$cnt++;
-			endwhile;
-	?>
-			</ol>
-			<div class="wrap_btn_all-cat">
-				<a href="#">全てのランキングを見る</a>
-			</div>
-		</section>
-	<?php 
-			wp_reset_postdata();
-		endforeach;
-	?>			
+<?php 
+		wp_reset_postdata();
+	endforeach;
+?>			
 	</div><!-- /left-column -->
 
 	<!-- 右カラム -->
 	<div class="right-column">
 <?php
-	$right_query_args = Array(
-		'post_type' => 'post',
-		'posts_per_page' => 20,
-		'meta_key' => 'topicsStatus',
-		'meta_value' => 'null',
-		'meta_compare' => '!=',
-		'orderby' => 'topicsUpdateDate',
-		'order' => 'DESC'
-	);
-	$right_query = new WP_Query($right_query_args);
-	// ナンバリング
-	$cnt=1;
-	if($right_query->have_posts()): while($right_query->have_posts()): $right_query->the_post();
-		if($cnt == 1):
+/**
+ * 最新トピックス
+*/
+$right_query_args = Array(
+	'post_type' => 'post',
+	'posts_per_page' => 20,
+	'meta_query' => array(
+		'relation' => 'AND',
+		array(
+			'key' => 'topicsStatus',
+			'value' => 'null',
+			'compare' => '!=',
+		),
+		array(
+			'key' => 'topicsUpdateDate',
+			'value' => 'null',
+			'compare' => '!=',
+		)
+	),
+	'meta_key' => 'topicsUpdateDate',
+	'orderby' => 'meta_value',
+	'order' => 'DESC'
+);
+$right_query = new WP_Query($right_query_args);
+// ナンバリング
+$cnt=1;
+if($right_query->have_posts()): while($right_query->have_posts()): $right_query->the_post();
+	if($cnt == 1):
 ?>
 		<section>
 			<h2>最新トピックス</h2>
-	<?php 	
-		endif; 
+<?php 	
+	endif; 
 
-		// 更新日（表示用）
-		$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
-		// 更新日（タグ用）
-		$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
-		// メインカテゴリ
-		$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-		$cat_name = $cat_obj->cat_name;
-	?>
+	// 更新日（表示用）
+	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
+	// 更新日（タグ用）
+	$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
+	// メインカテゴリ
+	$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
+	$cat_name = $cat_obj->cat_name;
+?>
 			<div class="wrap_topic">
 				<div class="wrap_topic-left">
 			<?php if(get_topics_status($post->ID) != null): ?>
@@ -274,11 +295,12 @@
 			</div>
 <?php 
 	$cnt++;
-	endwhile; endif;
+	endwhile;
 ?>
 		</section>
 <?php 
-	wp_reset_postdata();
+endif;
+wp_reset_postdata();
 ?>
 	</div><!-- /right-column -->
 

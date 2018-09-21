@@ -64,7 +64,7 @@ elseif(is_category()):
 	<nav id="js-nav" class="u-clearfix">
 		<a href="<?php echo get_home_url(); ?>" class="logo">オンラインゲーム PLANET</a>
 		<ul id="js-main-cat" class="global-nav">
-			<li><a href="/category/?sort=&newarrival=on">新作</a></li>
+			<li><a href="/category/new/">新作</a></li>
 			<li><a href="/category/browser-games/">ブラウザゲーム</a></li>
 			<li><a href="/category/mmorpg/">MMORPG</a></li>
 			<li><a href="/category/fps/">FPS/TPS</a></li>
@@ -86,9 +86,9 @@ elseif(is_category()):
 			</li>
 		</ul>
 		<div id="js-btn_search" class="search"><span>検索</span></div>
-		<form id="js-search">
-			<input type="text" placeholder="検索するキーワードを入力">
-			<input type="submit" id="search_submit" value="検索">
+		<form id="js-search" role="search" method="get" id="searchform" action="<?php echo home_url( '/' ); ?>">
+			<input type="text" placeholder="検索するキーワードを入力" name="s" id="s" >
+			<input type="submit" id="search_submit searchsubmit" value="検索">
 		</form>
 		<button id="js-btn_hamburger" class="hamburger">
 			<span class="line_top"></span>
