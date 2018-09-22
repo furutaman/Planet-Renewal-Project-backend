@@ -493,7 +493,7 @@ function pre_get_cat_list($query){
 				)
 			);
 		}
-		
+
 
 		// 閲覧数順
 		if($sort == "popular"){
@@ -663,6 +663,43 @@ function check_multi_page() {
   $current_page = get_query_var( 'page' );
   return array ( $num_pages, $current_page );
 }
+
+/**
+ * 検索対象にカスタムフィールドを含める
+ */
+function custom_search($search, $wp_query) {
+	global $wpdb;
+
+	if (!$wp_query->is_search)
+		return $search;
+	if (!isset($wp_query->query_vars))
+		return $search;
+
+	$search_words = $wp_query->query_vars['search_terms'];
+	if ( count($search_words) > 0 ) {
+		$search = '';
+		$search .= "AND post_type = 'post'";
+		foreach ( $search_words as $word ) {
+			if ( !empty($word) ) {
+				$search_word = '%' . esc_sql( $word ) . '%';
+				$search .= " AND (
+					{$wpdb->posts}.post_title LIKE '{$search_word}'
+					OR {$wpdb->posts}.post_content LIKE '{$search_word}'
+					OR {$wpdb->posts}.ID
+					IN (
+						SELECT distinct post_id
+						FROM {$wpdb->postmeta}
+						WHERE meta_value LIKE '{$search_word}'
+						AND meta_key = 'gameName'
+					)
+				) ";
+			}
+		}
+	}
+	return $search;
+}
+add_filter('posts_search','custom_search', 10, 2);
+
 ?>
 <?php
 /**
