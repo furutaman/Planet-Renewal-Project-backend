@@ -18,10 +18,10 @@ $total_results = $wp_query->found_posts;
 	<h1 class="cat-title">"<?php echo get_search_query(); ?>"の検索結果</h1>
 
 
-<!-- 2カラム（親カラム） -->
+	<!-- 2カラム（親カラム） -->
 	<div class="parent-column u-clearfix">
 
-<!-- 左カラム -->
+	<!-- 左カラム -->
     <div class="left-column">
 
 		<section>

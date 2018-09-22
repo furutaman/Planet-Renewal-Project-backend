@@ -3,10 +3,10 @@
 	<p>プレイしたいゲームがみつかる、新しいゲームに出会える！</p>
 	<div class="logo_footer">オンラインゲーム PLANET</div>
 	<ul>
-		<li><a href="#">運営会社について</a></li>
-		<li><a href="#">利用規約</a></li>
-		<li><a href="#">お問い合わせ</a></li>
-		<li><a href="#">サイトマップ</a></li>
+		<li><a href="/company/">運営会社について</a></li>
+		<li><a href="/terms/">利用規約</a></li>
+		<li><a href="/contact/">お問い合わせ</a></li>
+		<li><a href="/sitemap/">サイトマップ</a></li>
 	</ul>
 	<address>&copy;2018 PLANET MEDIA Inc. All Rights Reserved.</address>
 </footer>
@@ -36,5 +36,7 @@
 	(window.jQuery || document.write('<script src="<?php echo get_template_directory_uri(); ?>/js/jquery.min.js"><\/script>'));
 </script>
 <script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/main.js"></script>
+
+<?php wp_footer(); ?>
 </body>
 </html>
