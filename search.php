@@ -1,8 +1,6 @@
 <?php 
 get_header();
 
-
-// global $wp_query;
 $total_results = $wp_query->found_posts;
 
 ?>
@@ -36,7 +34,7 @@ if(have_posts()): while(have_posts()):the_post();
 
 ?>
 			<section class="u-mtl2">
-				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status_cat($post->ID); ?></h3>
+				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status($post->ID,"3"); ?></h3>
 				<p class="title_game">発行部数31万越えの人気小説が無料ブラウザゲームとして登場！素材収集や装備加工、自給自足が楽しめる生活系ブラウザRPG！</p>
 				<div class="wrap_koma">
 					<div class="koma_left">

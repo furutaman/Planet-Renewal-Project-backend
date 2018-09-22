@@ -32,7 +32,7 @@ while (have_posts()) : the_post();
 	<h1 class="cat-title"><?php echo $game_name; ?></h1>
 	<div class="wrap-release-date">
 		<span class="time">リリース日：<time datetime="<?php echo $topics_update_date_replace; ?>"><?php echo $topics_update_date; ?></time></span>
-		<?php echo get_release_status_post($post->ID); ?>
+		<?php echo get_release_status($post->ID,"2"); ?>
 	</div>
 	<div class="wrap-label u-mts">
 		<?php if( get_pc_sp($post->ID) != null): ?>

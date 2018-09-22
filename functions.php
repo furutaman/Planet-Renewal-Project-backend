@@ -7,6 +7,7 @@ add_image_size("thumbnails_438x328", "438px", "328px", false);
 add_filter( 'wp_calculate_image_srcset_meta', '__return_null' );
 // adminber削除
 add_filter('show_admin_bar', '__return_false');
+
 /**
  * スマートフォンを判別
  * @return スマホならtrue それ以外false
@@ -126,48 +127,57 @@ function get_price_tag($post_id){
 
 /**
  * カスタムフィールドから「リリースステータス」を取得
- * @param 記事ID
+ * @param $post_id 記事ID
+ * @param $class_type 条件によってclassを付与する
  * @return リリースステータス
 */
-function get_release_status($post_id){
+function get_release_status($post_id, $class_type){
+
 	$release_status = get_post_meta($post_id , 'releaseStatus' ,true);
 
-	//echo $release_status.'<br>';
+	if($class_type == "1"){
+		$class = " label_small ";
+	}
+	else if($class_type == "2"){
+		$class = " label_large ";
+	}
+	else if($class_type == "3"){
+		$class = "u-mlm label_large ";
+	}
+	
+
 
 	if( $release_status == '1' ){
 		// リリース日
 		$release_date = get_post_meta($post_id , 'gameRelease' ,true);
-		//echo $release_date.'<br>';
 		// 半年前
 		$six_months_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-6 month"));
-		//echo $six_months_ago.'<br>';
 		// 一年前
 		$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
-		//echo $one_year_ago.'<br>';
 
 		// リリース日が半年以内
 		if(strtotime($release_date) > strtotime($six_months_ago)){
-			return '<a class="label_small label_new">新作</a>';
+			return '<a href="/category/new/" class="'.$class.'label_new">新作</a>';
 		}
 		// リリース日が1年以内
 		else if(strtotime($release_date) > strtotime($one_year_ago)){
-			return '<a class="label_small label_new">準新作</a>';
+			return '<a href="/category/new/" class="'.$class.'label_new">準新作</a>';
 		}
 	}
 	else if( $release_status == '2' ){
-		return '<span class="label_small label_pre">βテスト中</span>';
+		return '<a href="/category/new/" class="'.$class.'label_pre">βテスト中</a>';
 	}
 	else if( $release_status == '3' ){
-		return '<span class="label_small label_pre">事前登録中</span>';
+		return '<a href="/category/new/" class="'.$class.'label_pre">事前登録中</a>';
 	}
 	else if( $release_status == '4' ){
-		return '<span class="label_small label_pre">サービス終了</span>';
+		return '<a href="/category/new/" class="'.$class.'label_pre">サービス終了</a>';
 	}
 	else if( $release_status == '5' ){
-		return '<span class="label_small label_pre">休止中</span>';
+		return '<span class="'.$class.'label_pre">休止中</span>';
 	}
 	else if( $release_status == '6' ){
-		return '<span class="label_small label_pre">リリース予定</span>';
+		return '<span class="'.$class.'label_pre">リリース予定</span>';
 	}
 
 	return "";
@@ -188,97 +198,6 @@ function get_release_status2($post_id){
 		return '<div class="label_topic_jizen">事前登録中</div>';
 	}
 	
-
-	return "";
-}
-
-/**
- * カスタムフィールドから「リリースステータス」を取得（記事用）
- * @param 記事ID
- * @return リリースステータス
-*/
-function get_release_status_post($post_id){
-	$release_status = get_post_meta($post_id , 'releaseStatus' ,true);
-
-	//echo $release_status.'<br>';
-
-	if( $release_status == '1' ){
-		// リリース日
-		$release_date = get_post_meta($post_id , 'gameRelease' ,true);
-		//echo $release_date.'<br>';
-		// 半年前
-		$six_months_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-6 month"));
-		//echo $six_months_ago.'<br>';
-		// 一年前
-		$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
-		//echo $one_year_ago.'<br>';
-
-		// リリース日が半年以内
-		if(strtotime($release_date) > strtotime($six_months_ago)){
-			return '<span class="label_large label_new">新作</span>';
-		}
-		// リリース日が1年以内
-		else if(strtotime($release_date) > strtotime($one_year_ago)){
-			return '<span class="label_large label_new">準新作</span>';
-		}
-	}
-	else if( $release_status == '2' ){
-		return '<span class="label_large label_pre">βテスト中</span>';
-	}
-	else if( $release_status == '3' ){
-		return '<span class="label_large label_pre">サービス終了</span>';
-	}
-	else if( $release_status == '4' ){
-		return '<span class="label_large label_pre">休止中</span>';
-	}
-	else if( $release_status == '5' ){
-		return '<span class="label_large label_pre">リリース予定</span>';
-	}
-
-	return "";
-}
-
-/**
- * カスタムフィールドから「リリースステータス」を取得（カテゴリ用）
- * @param 記事ID
- * @return リリースステータス
-*/
-function get_release_status_cat($post_id){
-	$release_status = get_post_meta($post_id , 'releaseStatus' ,true);
-
-
-	if( $release_status == '1' ){
-		// リリース日
-		$release_date = get_post_meta($post_id , 'gameRelease' ,true);
-		//echo $release_date.'<br>';
-		// 半年前
-		$six_months_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-6 month"));
-		//echo $six_months_ago.'<br>';
-		// 一年前
-		$one_year_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-12 month"));
-		//echo $one_year_ago.'<br>';
-
-		// リリース日が半年以内
-		if(strtotime($release_date) > strtotime($six_months_ago)){
-			return '<span class="u-mlm label_large label_new">新作</span>';
-		}
-		// リリース日が1年以内
-		else if(strtotime($release_date) > strtotime($one_year_ago)){
-			return '<span class="u-mlm label_large label_new">準新作</span>';
-		}
-	}
-	else if( $release_status == '2' ){
-		return '<span class="u-mlm label_large label_pre">βテスト中</span>';
-	}
-	else if( $release_status == '3' ){
-		return '<span class="u-mlm label_large label_pre">サービス終了</span>';
-	}
-	else if( $release_status == '4' ){
-		return '<span class="u-mlm label_large label_pre">休止中</span>';
-	}
-	else if( $release_status == '5' ){
-		return '<span class="u-mlm label_large label_pre">リリース予定</span>';
-	}
 
 	return "";
 }
@@ -307,8 +226,6 @@ function get_categorys_link($kind){
 		$cat_return = $cat_return.'<a href="'.get_category_link( $category->term_id ).'" class="label_large">'.$category->cat_name.'</a>';
 
 	}
-
-	//echo htmlspecialchars($cat_return);
 	
 	return $cat_return;
 }
@@ -567,19 +484,14 @@ function get_start_end_date($post_id){
 // add_action( 'wp_head', 'update_custom_meta_views' );
 
 
-remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-remove_action( 'wp_print_styles', 'print_emoji_styles' );
-
+remove_action('wp_head', 'print_emoji_detection_script', 7 );
+remove_action('wp_print_styles', 'print_emoji_styles' );
 remove_action('wp_head', 'wp_shortlink_wp_head');
-remove_action('wp_head', 'wp_shortlink_wp_head');
-
-remove_action('wp_head','rest_output_link_wp_head');
-remove_action('wp_head','wp_oembed_add_discovery_links');
-remove_action('wp_head','wp_oembed_add_host_js');
-
+remove_action('wp_head', 'rest_output_link_wp_head');
+remove_action('wp_head', 'wp_oembed_add_discovery_links');
+remove_action('wp_head', 'wp_oembed_add_host_js');
 remove_action('wp_head', 'rsd_link');
-remove_action('wp_head','wlwmanifest_link');
-
+remove_action('wp_head', 'wlwmanifest_link');
 remove_action('wp_head', 'rel_canonical');
 remove_action('wp_head', 'wp_generator');
 

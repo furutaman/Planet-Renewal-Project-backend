@@ -29,7 +29,7 @@ while($related_query->have_posts()): $related_query->the_post();
 			<a href="<?php the_permalink() ?>" class="top3_thumb"><img src="<?php the_post_thumbnail_url('thumbnails_438x328'); ?>" width="100%"></a>
 			<h4><a href="<?php the_permalink() ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h4>
 			<div>
-				<?php echo get_release_status($post->ID); ?>
+				<?php echo get_release_status($post->ID,"1"); ?>
 				<?php if( get_pc_sp($post->ID) != null): ?>
 					<a href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></a>
 				<?php endif; ?>

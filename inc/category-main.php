@@ -21,7 +21,7 @@ if(have_posts()): while(have_posts()):the_post();
 	$game_release_date_replace = str_replace('/', '-',$game_release_date);
 ?>
 			<section>
-				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status_cat($post->ID); ?></h3>
+				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status($post->ID,"3"); ?></h3>
 				<p class="title_game"><?php echo get_the_title(); ?></p>
 				<div class="wrap_koma">
 					<div class="koma_left">
