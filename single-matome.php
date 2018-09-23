@@ -8,9 +8,6 @@ Template Post Type: post
 
 <?php
 while (have_posts()) : the_post();
-	// メインカテゴリ
-	$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-	$cat_name = $cat_obj->cat_name;
 	// 更新日（表示用）
 	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
 	// 更新日（タグ用）
@@ -33,7 +30,7 @@ while (have_posts()) : the_post();
 		<li><a href="#"><?php echo $game_name; ?></a></li>
 	</ul>
 
-<!-- タイトル -->
+	<!-- タイトル -->
 	<h1 class="cat-title"><?php echo $game_name; ?></h1>
 	<div class="wrap-label u-mtl2">
 	<?php if( get_pc_sp($post->ID) != null): ?>

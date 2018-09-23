@@ -47,6 +47,39 @@ function is_iosMobile(){
     return preg_match($pattern, $_SERVER['HTTP_USER_AGENT']);
 }
 
+/**
+ * 新作オンラインゲームかどうか
+ * @param slug
+ * @return iOSならtrue それ以外false
+*/
+function is_category_new($post_id){
+    if( get_post_meta($post_id, 'mainCategory', true) == "new"){
+    	return true;
+    }
+
+    return null;
+}
+
+
+/**
+ * メインカテゴリのカテゴリ名を取得
+ * @param slug
+ * @return iOSならtrue それ以外false
+*/
+function get_category_name($post_id){
+    $cat_obj = get_category_by_slug( get_post_meta($post_id, 'mainCategory', true));
+    return $cat_obj->cat_name;
+}
+
+/**
+ * メインからカテゴリのURLを取得
+ * @param slug
+ * @return iOSならtrue それ以外false
+*/
+function get_category_url($post_id){
+    $cat_obj = get_category_by_slug( get_post_meta($post_id, 'mainCategory', true));
+    return get_category_link( $cat_obj->cat_ID );
+}
 
 /**
  * カスタムフィールドから「メインカテゴリを取得」を取得

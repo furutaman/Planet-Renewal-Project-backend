@@ -152,17 +152,16 @@ if($attention_query->have_posts()): while($attention_query->have_posts()): $atte
 	$release_update_date = get_post_meta($post->ID, 'gameRelease', true);
 	// リリース日（タグ用）
 	$release_update_date_replace = str_replace('/', '-',$release_update_date);
-	// メインカテゴリ
-	$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-	$cat_name = $cat_obj->cat_name;
 ?>
 		<div class="wrap_topic">
 			<div class="wrap_topic-left">
 				<div class="time no-icon">リリース日：<time datetime="<?php echo $release_update_date_replace; ?>"><?php echo $release_update_date; ?></time></div>
 				<h3><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
 				<div>
-					<a href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></a>
-					<a href="#" class="label_small"><?php echo $cat_name; ?></a>
+					<?php if( get_pc_sp($post->ID) != null): ?>
+						<span class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
+					<?php endif ;?>
+					<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 				</div>
 			</div>
 			<div class="wrap_topic-right">
@@ -199,7 +198,7 @@ $beta_query_args = Array(
 			'compare' => '!=',
 		)
 	),
-	'orderby' => array( 'meta_releaseStatus' => 'ASC', 'meta_preStartDate' => 'ASC' ),
+	'orderby' => array( 'meta_releaseStatus' => 'ASC', 'meta_preStartDate' => 'DESC' ),
 	// 'orderby' => 'meta_value',
 	// 'meta_key' => 'preStartDate',
 	// 'order' => 'DESC'
@@ -227,9 +226,9 @@ $cat_name = $cat_obj->cat_name;
 				<div class="time no-icon"><?php echo get_start_end_date($post->ID); ?></div>
 				<h4><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h4>
 				<div>
-					<?php if( get_pc_sp($post->ID) != null): ?>
-						<a href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></a>
-					<?php endif; ?>
+				<?php if( get_pc_sp($post->ID) != null): ?>
+					<span href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
+				<?php endif; ?>
 					<a href="#" class="label_small"><?php echo $cat_name; ?></a>
 				</div>
 			</div>

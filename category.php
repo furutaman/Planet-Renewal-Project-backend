@@ -34,18 +34,33 @@ $rank_update_date_replace = str_replace('/', '-',$rank_update_date);
 	?>
 
 
-<!-- 右カラム -->
+	<!-- 右カラム -->
     <div class="right-column">
 <?php
 	$right_query_args = Array(
 		'post_type' => 'post',
 		'cat' => $cat,
 		'posts_per_page' => 20,
-		'meta_key' => 'topicsStatus',
-		'meta_value' => 'null',
-		'meta_compare' => '!=',
-		'orderby' => 'topicsUpdateDate',
-		'order' => 'DESC'
+		'meta_query' => array(
+			'relation' => 'AND',
+			'meta_topicsStatus'=>array(
+				'key' => 'topicsStatus',
+				'value' => 'null',
+				'compare' => '!=',
+			),
+			'meta_topicsUpdateDate'=>array(
+				'key' => 'topicsUpdateDate',
+				'value' => 'null',
+				'compare' => '!=',
+			),
+		),
+		'orderby' => array( 'meta_topicsUpdateDate' => 'DESC' ),
+
+		// 'meta_key' => 'topicsStatus',
+		// 'meta_value' => 'null',
+		// 'meta_compare' => '!=',
+		// 'orderby' => 'topicsUpdateDate',
+		// 'order' => 'DESC'
 	);
 	$right_query = new WP_Query($right_query_args);
 	// ナンバリング
@@ -62,9 +77,6 @@ $rank_update_date_replace = str_replace('/', '-',$rank_update_date);
 		$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
 		// 更新日（タグ用）
 		$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
-		// メインカテゴリ
-		$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-		$cat_name = $cat_obj->cat_name;
 ?>
 		<div class="wrap_topic">
 			<div class="wrap_topic-left">
@@ -76,9 +88,9 @@ $rank_update_date_replace = str_replace('/', '-',$rank_update_date);
 				<p><a href="<?php echo the_permalink($post->ID); ?>" class="u-mrs"><?php echo get_post_meta($post->ID, 'topicsText', true); ?></a></p>
 				<div>
 				<?php if( get_pc_sp($post->ID) != null): ?>
-						<span class="label_small label_device"><?php echo get_pc_sp($post->ID);?></span>
+					<span class="label_small label_device"><?php echo get_pc_sp($post->ID);?></span>
 				<?php endif;?>
-						<a href="#" class="label_small"><?php echo $cat_name; ?></a>
+					<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 				</div>
 			</div>
 			<div class="wrap_topic-right">

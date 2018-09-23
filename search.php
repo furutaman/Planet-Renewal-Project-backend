@@ -121,9 +121,6 @@ if($right_query->have_posts()): while($right_query->have_posts()): $right_query-
 	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
 	// 更新日（タグ用）
 	$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
-	// メインカテゴリ
-	$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-	$cat_name = $cat_obj->cat_name;
 ?>
 
 			<div class="wrap_topic u-mtl2">
@@ -138,7 +135,7 @@ if($right_query->have_posts()): while($right_query->have_posts()): $right_query-
 					<?php if( get_pc_sp($post->ID) != null): ?>
 						<span class="label_small label_device"><?php echo get_pc_sp($post->ID);?></span>
 					<?php endif;?>
-						<a href="#" class="label_small"><?php echo $cat_name; ?></a>
+						<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 					</div>
 				</div>
 				<div class="wrap_topic-right">

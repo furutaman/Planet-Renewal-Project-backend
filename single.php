@@ -3,9 +3,6 @@
 
 <?php
 while (have_posts()) : the_post();
-	// メインカテゴリ
-	$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-	$cat_name = $cat_obj->cat_name;
 	// 更新日（表示用）
 	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
 	// 更新日（タグ用）
@@ -44,6 +41,10 @@ while (have_posts()) : the_post();
 		<?php 
 			$categorys = get_the_category();
 			foreach ($categorys as $category):
+				
+				if($category->slug == "new")
+					continue;
+
 				array_push($cat_ids,$category->term_id);
 		?>
 				<a href="<?php echo get_category_link( $category->term_id ); ?>" class="label_large"><?php echo $category->cat_name; ?></a>

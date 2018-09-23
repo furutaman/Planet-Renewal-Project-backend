@@ -147,11 +147,6 @@ date = true
 dateFormat = yyyy/mm/dd
 startDate = '1970/01/01'
 
-[relatedArticle]
-type= checkbox
-value=1
-valueLabel=関連記事
-
 [metaTitle]
 type = textarea
 rows = 4
@@ -184,7 +179,3 @@ size = 10
 [popularRank]
 type = text
 size = 10
-
-[custom_meta_views]
-type = text
-size = 20
