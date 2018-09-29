@@ -6,9 +6,6 @@ $related_query_args = Array(
 	'category' => $cat_ids,
 	'tag' => 'related',
 	'posts_per_page' => 6,
-	// 'meta_key' => 'relatedArticle',
-	// 'meta_value' => '1',
-	// 'meta_compare' => '=',
 	'orderby' => 'rand'
 );
 $related_query = new WP_Query($related_query_args);

@@ -20,8 +20,8 @@ while (have_posts()) : the_post();
 
 	<!-- パンくず -->
 	<ul class="breadcrumb u-clearfix">
-		<li><a href="#">オンラインゲームPLANET</a></li>
-		<li><a href="#"><?php echo get_main_category($post->ID); ?></a></li>
+		<li><a href="<?php echo esc_url( get_home_url() ); ?>">オンラインゲームPLANET</a></li>
+		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_main_category($post->ID); ?></a></li>
 		<li><a href="#"><?php echo $game_name; ?></a></li>
 	</ul>
 

@@ -7,7 +7,7 @@ Template Post Type: post
 <main>
 
 <?php
-while (have_posts()) : the_post();
+if(have_posts()) : while (have_posts()) : the_post();
 	// 更新日（表示用）
 	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
 	// 更新日（タグ用）
@@ -25,8 +25,8 @@ while (have_posts()) : the_post();
 
 	<!-- パンくず -->
 	<ul class="breadcrumb u-clearfix">
-		<li><a href="#">オンラインゲームPLANET</a></li>
-		<li><a href="#"><?php echo get_main_category($post->ID); ?></a></li>
+		<li><a href="<?php echo esc_url( get_home_url() ); ?>">オンラインゲームPLANET</a></li>
+		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_main_category($post->ID); ?></a></li>
 		<li><a href="#"><?php echo $game_name; ?></a></li>
 	</ul>
 
@@ -88,6 +88,7 @@ while (have_posts()) : the_post();
 	      </article>
 <?php 
 endwhile;
+endif;
 wp_reset_postdata();
 
 // 関連記事取得

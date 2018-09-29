@@ -22,7 +22,7 @@
 <meta property="og:url" content="<?php echo get_permalink(); ?>">
 <meta name="keywords" content="<?php echo get_post_meta($post->ID, 'metaKeyword', true);?>">
 <meta name="description" content="<?php echo get_post_meta($post->ID, 'metaDescription', true);?>">
-
+<meta property="og:image" content="<?php echo the_post_thumbnail_url(); ?>">
 
 <?php elseif(is_category()):
 	$cat_info = get_category( $cat );
@@ -74,7 +74,7 @@
 			<li><a href="/category/browser-games/">ブラウザゲーム</a></li>
 			<li><a href="/category/mmorpg/">MMORPG</a></li>
 			<li><a href="/category/fps/">FPS/TPS</a></li>
-			<li><a href="/category/rts/">アクションゲーム</a></li>
+			<li><a href="/category/action/">アクションゲーム</a></li>
 			<li id="js-btn_other" class="cat_other">
 				<a class="menu_other">その他</a>
 				<ul id="js-sub-cat">
