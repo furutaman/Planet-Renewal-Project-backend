@@ -71,9 +71,6 @@ if($attention_query->have_posts()): while($attention_query->have_posts()): $atte
 	$release_update_date = get_post_meta($post->ID, 'gameRelease', true);
 	// リリース日（タグ用）
 	$release_update_date_replace = str_replace('/', '-',$release_update_date);
-	// メインカテゴリ
-	$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-	$cat_name = $cat_obj->cat_name;
 ?>
 			<li>
 				<span class="time">リリース日：<time datetime="<?php echo $release_update_date_replace; ?>"><?php echo $release_update_date; ?></time></span>
@@ -83,7 +80,7 @@ if($attention_query->have_posts()): while($attention_query->have_posts()): $atte
 				<?php if( get_pc_sp($post->ID) != null): ?>
 					<span class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
 				<?php endif; ?>
-					<a href="#" class="label_small"><?php echo $cat_name ?></a>
+					<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 				</div>
 			</li>
 <?php 
@@ -214,11 +211,6 @@ if($beta_query_args_args->have_posts()): while($beta_query_args_args->have_posts
 		<h2>βテスト・事前登録中のゲーム</h2>
 <?php 
 endif;
-
-// メインカテゴリ
-$cat_obj = get_category_by_slug( get_post_meta($post->ID, 'mainCategory', true));
-$cat_name = $cat_obj->cat_name;
-
 ?>
 		<div class="wrap_topic">
 			<div class="wrap_topic-left">
@@ -229,7 +221,7 @@ $cat_name = $cat_obj->cat_name;
 				<?php if( get_pc_sp($post->ID) != null): ?>
 					<span href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
 				<?php endif; ?>
-					<a href="#" class="label_small"><?php echo $cat_name; ?></a>
+					<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 				</div>
 			</div>
 			<div class="wrap_topic-right">

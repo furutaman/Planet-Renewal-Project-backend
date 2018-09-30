@@ -24,10 +24,10 @@ while($related_query->have_posts()): $related_query->the_post();
 			<div>
 				<?php echo get_release_status($post->ID,"1"); ?>
 				<?php if( get_pc_sp($post->ID) != null): ?>
-					<a href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></a>
+					<span class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
 				<?php endif; ?>
 				<?php if( get_price_tag($post->ID) != null): ?>
-					<a href="#" class="label_small"><?php echo get_price_tag($post->ID); ?></a>
+					<span href="#" class="label_small"><?php echo get_price_tag($post->ID); ?></span>
 				<?php endif; ?>
 				<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 			</div>

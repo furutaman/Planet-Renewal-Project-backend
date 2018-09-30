@@ -22,7 +22,7 @@ while (have_posts()) : the_post();
 	<ul class="breadcrumb u-clearfix">
 		<li><a href="<?php echo esc_url( get_home_url() ); ?>">オンラインゲームPLANET</a></li>
 		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_main_category($post->ID); ?></a></li>
-		<li><a href="#"><?php echo $game_name; ?></a></li>
+		<li><a href="<?php echo the_permalink($post->ID); ?>"><?php echo $game_name; ?></a></li>
 	</ul>
 
 	<!-- タイトル -->
@@ -33,10 +33,10 @@ while (have_posts()) : the_post();
 	</div>
 	<div class="wrap-label u-mts">
 		<?php if( get_pc_sp($post->ID) != null): ?>
-			<a href="#" class="label_large label_device"><?php echo get_pc_sp($post->ID); ?></a>
+			<span class="label_large label_device"><?php echo get_pc_sp($post->ID); ?></span>
 		<?php endif; ?>
 		<?php if( get_price_tag($post->ID) != null): ?>
-			<a href="#" class="label_large label_fee"><?php echo get_price_tag($post->ID); ?></a>
+			<span class="label_large label_fee"><?php echo get_price_tag($post->ID); ?></span>
 		<?php endif; ?>
 		<?php 
 			$categorys = get_the_category();

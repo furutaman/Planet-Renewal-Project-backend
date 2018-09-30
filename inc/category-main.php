@@ -32,10 +32,10 @@ if(have_posts()): while(have_posts()):the_post();
 						<div class="time no-icon">リリース日：<time datetime="<?php echo $game_release_date_replace;?>"><?php echo $game_release_date;?></time></div>
 						<div>
 						<?php if( get_pc_sp($post->ID) != null): ?>
-							<a href="#" class="label_large label_device"><?php echo get_pc_sp($post->ID);?></a>
+							<span class="label_large label_device"><?php echo get_pc_sp($post->ID);?></span>
 						<?php endif; ?>
 						<?php if( get_price_tag($post->ID) != null): ?>
-							<a href="#" class="label_large label_fee"><?php echo get_price_tag($post->ID)?></a>
+							<span class="label_large label_fee"><?php echo get_price_tag($post->ID)?></span>
 						<?php endif; ?>
 							<?php echo get_categorys_link(3); ?>
 						</div>
