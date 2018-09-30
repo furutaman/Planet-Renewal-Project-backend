@@ -673,12 +673,13 @@ footer ul li {
         <li><a href="/category/rts/">RTS</a></li>
         <li><a href="/category/card-games/">TCG／カード</a></li>
         <li><a href="/category/baseball/">野球ゲーム</a></li>
+        <li><a href="/category/avatar/">アバターゲーム</a></li>
         <li><a href="/category/html5/">HTML5ゲーム</a></li>
         <li><a href="/category/hackandslash/">ハクスラ</a></li>
         <li><a href="/category/otome/">女性向けゲーム</a></li>
         <li><a href="/category/smartphone-apps/">スマホゲーム</a></li>
         <li><a href="/category/vr/">VR</a></li>
-        <li><a href="/category/">steam</a></li>
+        <li><a href="/category/steam/">steam</a></li>
       </ul>
     </nav>
     <form method="get" action="https://example.com/subscribe" target="_top" class="u-ps u-mbl2">
