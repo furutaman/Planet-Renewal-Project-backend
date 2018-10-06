@@ -83,7 +83,7 @@ $rank_update_date_replace = str_replace('/', '-',$rank_update_date);
 			<?php if(get_topics_status($post->ID) != null): ?>
 				<div class="label_topic"><?php echo get_topics_status($post->ID); ?></div>
 			<?php endif; ?>
-				<div class="time"><time datetime="<?php echo $topics_update_date;?>"><?php echo $topics_update_date_replace;?></time></div>
+				<div class="time"><time datetime="<?php echo $topics_update_date_replace;?>"><?php echo $topics_update_date;?></time></div>
 				<h3><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
 				<p><a href="<?php echo the_permalink($post->ID); ?>" class="u-mrs"><?php echo get_post_meta($post->ID, 'topicsText', true); ?></a></p>
 				<div>

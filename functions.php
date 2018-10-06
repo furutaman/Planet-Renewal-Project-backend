@@ -111,6 +111,9 @@ function get_link_to_official($post_id){
 	else if( $link_to_official == '3' ){
 		return 'のβテストに参加する！！';
 	}
+	else{
+		return '公式サイトへ';
+	}
 
 	return "";
 }
@@ -378,6 +381,24 @@ function get_cat_active_class($active){
 }
 
 /**
+ * ゲットパラメータによって、ナンバリングを付与
+ * sort popullar=閲覧数, new=新着 指定なし=おすすめ
+*/
+function get_cat_numbering($cnt){
+
+	$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
+	$sort = htmlspecialchars($sort, ENT_QUOTES);
+
+	// 閲覧数順
+	if($sort == "new"){
+		return "";
+	}
+
+	return '<span class="number">'.$cnt.'位</span>';
+
+}
+
+/**
  * 各順位の更新日を返却
  * todo:ID決め打ち
 */
@@ -498,7 +519,7 @@ function get_start_end_date($post_id){
 		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>〜<time datetime="'.$end_date_replace.'">'.$end_date.'</time>';
 	}
 	else{
-		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>';
+		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>〜';
 	}
 
 }

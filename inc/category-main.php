@@ -12,13 +12,24 @@
 			</ul>
 
 <?php 
-$cnt=1;
-if(have_posts()): while(have_posts()):the_post();
+	/**
+	 * ナンバリング
+	*/
+	$cnt=1;
+	$page_num = get_query_var('paged'); //ページ番号の取得;
 
-	// リリース日（表示用）
-	$game_release_date = get_post_meta($post->ID, 'gameRelease', true);
-	// リリース（タグ用）
-	$game_release_date_replace = str_replace('/', '-',$game_release_date);
+	// 2P以降はページ目、最大件数から算出）
+	if($page_num > 1){
+		$max_disp = get_option('posts_per_page'); 
+		$cnt = ( $max_disp * ($page_num-1) ) + 1;
+	}
+
+	if(have_posts()): while(have_posts()):the_post();
+	
+		// リリース日（表示用）
+		$game_release_date = get_post_meta($post->ID, 'gameRelease', true);
+		// リリース（タグ用）
+		$game_release_date_replace = str_replace('/', '-',$game_release_date);
 ?>
 			<section>
 				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status($post->ID,"3"); ?></h3>
@@ -27,7 +38,8 @@ if(have_posts()): while(have_posts()):the_post();
 					<div class="koma_left">
 						<div class="u-relative">
 							<a href="<?php the_permalink(); ?>"><img src="<?php the_post_thumbnail_url('thumbnails_438x328'); ?>" width="100%"></a>
-							<span class="number"><?php echo $cnt ?>位</span>
+							<?php echo get_cat_numbering($cnt); ?>
+							
 						</div>
 						<div class="time no-icon">リリース日：<time datetime="<?php echo $game_release_date_replace;?>"><?php echo $game_release_date;?></time></div>
 						<div>

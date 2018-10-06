@@ -3,6 +3,10 @@
 
 <?php
 while (have_posts()) : the_post();
+	// リリース日（表示用）
+	$gameRelease_date = get_post_meta($post->ID, 'gameRelease', true);
+	// リリース日（タグ用）
+	$gameRelease_date_replace = str_replace('/', '-',$gameRelease_date);
 	// 更新日（表示用）
 	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
 	// 更新日（タグ用）
@@ -28,7 +32,7 @@ while (have_posts()) : the_post();
 	<!-- タイトル -->
 	<h1 class="cat-title"><?php echo $game_name; ?></h1>
 	<div class="wrap-release-date">
-		<span class="time">リリース日：<time datetime="<?php echo $topics_update_date_replace; ?>"><?php echo $topics_update_date; ?></time></span>
+		<span class="time">リリース日：<time datetime="<?php echo $gameRelease_date_replace; ?>"><?php echo $gameRelease_date; ?></time></span>
 		<?php echo get_release_status($post->ID,"2"); ?>
 	</div>
 	<div class="wrap-label u-mts">
@@ -136,7 +140,7 @@ include_once('inc/related-article.php');
 					<li><a href="#">採集などの生活系コンテンツ</a></li>
 					<li><a href="#">生活などのハウジングシステム</a></li>
 				</ul>
-				<a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
+				<a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」公式サイトへ</a>
 			</section>
 		</div><!-- /right-column -->
 	</div><!-- /parent-column -->

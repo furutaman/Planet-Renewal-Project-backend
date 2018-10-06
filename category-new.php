@@ -195,7 +195,7 @@ $beta_query_args = Array(
 			'compare' => '!=',
 		)
 	),
-	'orderby' => array( 'meta_releaseStatus' => 'ASC', 'meta_preStartDate' => 'DESC' ),
+	'orderby' => array( 'meta_releaseStatus' => 'DESC', 'meta_preStartDate' => 'DESC' ),
 	// 'orderby' => 'meta_value',
 	// 'meta_key' => 'preStartDate',
 	// 'order' => 'DESC'
@@ -219,7 +219,7 @@ endif;
 				<h4><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h4>
 				<div>
 				<?php if( get_pc_sp($post->ID) != null): ?>
-					<span href="#" class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
+					<span class="label_small label_device"><?php echo get_pc_sp($post->ID); ?></span>
 				<?php endif; ?>
 					<a href="<?php echo get_category_url($post->ID); ?>" class="label_small"><?php echo get_category_name($post->ID); ?></a>
 				</div>
