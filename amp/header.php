@@ -668,7 +668,7 @@ footer ul li {
         <li><a href="/category/smartphone-apps/">スマホゲーム</a></li>
         <li><a href="/category/vr/">VR</a></li>
         <li><a href="/category/steam/">steam</a></li>
-        <li><a href="/category/blockchain/">ブロックチェーン</a></li>
+        <li><a href="/category/blockchaingame/">ブロックチェーン</a></li>
       </ul>
     </nav>
     <form method="get" action="https://example.com/subscribe" target="_top" class="u-ps u-mbl2">

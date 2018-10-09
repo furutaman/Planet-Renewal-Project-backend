@@ -12,8 +12,10 @@ if(is_home()):
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
 
-<?php if(is_paged()): ?>
-<meta name="robots" content="noindex">
+<?php
+	// ホームかつ2P目移行
+	if(is_paged()):
+?>
 <link rel="canonical" href="<?php echo home_url(); ?>">
 <?php endif; ?>
 
@@ -38,11 +40,11 @@ elseif(is_single()):
 elseif(is_category()):
 	$cat_info = get_category($cat);
 ?>
+
 <title><?php echo get_cat_titletag($cat_info,$wp_query); ?></title>
 <meta property="og:url" content="<?php echo get_category_link($cat); ?>">
 <meta name="keywords" content="<?php ?>">
 <meta name="description" content="<?php echo get_cat_description($cat_info,$wp_query);?>">
-
 <?php echo get_cat_canonicaltag($cat); ?>
 
 <?php else:?>
@@ -92,7 +94,7 @@ elseif(is_category()):
 				<li><a href="/category/smartphone-apps/">スマホゲーム</a></li>
 				<li><a href="/category/vr/">VR</a></li>
 				<li><a href="/category/steam/">steam</a></li>
-				<li><a href="/category/blockchain/">ブロックチェーン</a></li>
+				<li><a href="/category/blockchaingame/">ブロックチェーン</a></li>
 				</ul>
 			</li>
 		</ul>

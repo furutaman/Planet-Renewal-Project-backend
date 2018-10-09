@@ -487,7 +487,7 @@ function get_cat_canonicaltag($cat){
 		return '<link rel="canonical" href="'.get_category_link($cat).'">';
 	}
 	else{
-		return '<link rel="canonical" href="'.get_category_link($cat).'">';	
+		//return '<link rel="canonical" href="'.get_category_link($cat).'">';	
 	}
 
 	return '';
@@ -523,13 +523,16 @@ function get_rank_update_date(){
 */
 function pre_get_cat_list($query){
 
-	if ( is_admin() || ! $query->is_main_query() ){
+	if ( is_admin() || is_404() || ! $query->is_main_query() ){
 		return;
 	}
-
 	
+	if ( $query->is_category() && get_queried_object() ) {
 
-	if ( $query->is_category() ) {
+		// 存在しないカテゴリの場合
+		// if( !get_queried_object() ){
+		// 	return;
+		// }
 
 		$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
 		$sort = htmlspecialchars($sort, ENT_QUOTES);

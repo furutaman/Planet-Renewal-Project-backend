@@ -33,7 +33,7 @@ $three_month_ago = date("Y/m/d",strtotime(date("Y/m/d") . "-3 month"));
 
 $attention_query_args = Array(
 	'post_type' => 'post',
-	'posts_per_page' => 5,
+	'posts_per_page' => 3,
 	'meta_query' => array(
 		'relation' => 'AND',
 		array(
@@ -64,6 +64,24 @@ if($attention_query->have_posts()): while($attention_query->have_posts()): $atte
 	<p class="new-game_title_sub">3ヶ月以内にリリースされた中から注目度の高いタイトルをピックアップ！</p>
 
     	<ul class="new-game u-clearfix">
+    		<li>
+				<span class="time">リリース日：2018/99/99</span>
+				<a href="#"><img src="https://placehold.jp/438x328.png" width="100%"></a>
+				<h3><a href="#">広告タイトル</a></h3>
+				<div>
+					<span class="label_small label_device">PC</span>
+					<a href="http://old-planet.mavericks.work/category/browser-games/" class="label_small">ブラウザゲーム</a>
+				</div>
+			</li>
+			<li>
+				<span class="time">リリース日：2018/99/99</span>
+				<a href="#"><img src="https://placehold.jp/438x328.png" width="100%"></a>
+				<h3><a href="#">広告タイトル</a></h3>
+				<div>
+					<span class="label_small label_device">PC</span>
+					<a href="http://old-planet.mavericks.work/category/browser-games/" class="label_small">ブラウザゲーム</a>
+				</div>
+			</li>
 <?php 	
 	endif; 
 ?>
