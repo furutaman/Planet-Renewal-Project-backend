@@ -68,7 +68,10 @@ function is_category_new($post_id){
 */
 function get_category_name($post_id){
     $cat_obj = get_category_by_slug( get_post_meta($post_id, 'mainCategory', true));
-    return $cat_obj->cat_name;
+    if($cat_obj)
+		return  $cat_obj->cat_name;
+	else
+		return '';
 }
 
 /**
@@ -81,19 +84,10 @@ function get_category_url($post_id){
     return get_category_link( $cat_obj->cat_ID );
 }
 
-/**
- * カスタムフィールドから「メインカテゴリを取得」を取得
- * @param 記事ID
- * @return メインカテゴリ
-*/
-function get_main_category($post_id){
-	$cat_obj = get_category_by_slug( get_post_meta($post_id, 'mainCategory', true) );
-	return  $cat_obj->cat_name;
-}
 
 /**
  * カスタムフィールドから「PC or スマホ」を取得
- * @param 記事ID
+ * @param post_id
  * @return デバイス名称
 */
 function get_link_to_official($post_id){
@@ -108,11 +102,11 @@ function get_link_to_official($post_id){
 	else if( $link_to_official == '3' ){
 		return 'をさっそくプレイしてみる！';
 	}
-	else if( $link_to_official == '3' ){
+	else if( $link_to_official == '4' ){
 		return 'のβテストに参加する！！';
 	}
 	else{
-		return '公式サイトへ';
+		return 'をさっそくプレイしてみる！';
 	}
 
 	return "";
@@ -121,8 +115,8 @@ function get_link_to_official($post_id){
 
 /**
  * カスタムフィールドから「PC or スマホ」を取得
- * @param 記事ID
- * @return デバイス名称
+ * @param post_id
+ * @return 端末名
 */
 function get_pc_sp($post_id){
 	$device = get_post_meta($post_id , 'pcSp' ,true);
@@ -142,7 +136,7 @@ function get_pc_sp($post_id){
 
 /**
  * カスタムフィールドから「基本無料or有料or無料体験可アイコン」を取得
- * @param 記事ID
+ * @param post_id
  * @return 料金体系名称
 */
 function get_price_tag($post_id){
@@ -197,7 +191,7 @@ function get_release_status($post_id, $class_type){
 		}
 		// リリース日が1年以内
 		else if(strtotime($release_date) > strtotime($one_year_ago)){
-			return '<a href="/category/new/" class="'.$class.'label_new">準新作</a>';
+			return '<a href="/category/new/" class="'.$class.'label_semi-new">準新作</a>';
 		}
 	}
 	else if( $release_status == '2' ){
@@ -221,7 +215,7 @@ function get_release_status($post_id, $class_type){
 
 /**
  * カスタムフィールドから「リリースステータス」を取得
- * @param 記事ID
+ * @param post_id
  * @return リリースステータス
 */
 function get_release_status2($post_id){
@@ -241,7 +235,7 @@ function get_release_status2($post_id){
 /**
  * 記事が所属しているカテゴリを取得
  * @param kind 1=すべて、2=ブラウザゲーム以外、3=ブラウザゲームのみ
- * @return 料金体系名称
+ * @return カテゴリ
 */
 function get_categorys_link($kind){
 
@@ -269,7 +263,7 @@ function get_categorys_link($kind){
 
 /**
  * カスタムフィールドから「最近のトピックスステータス」を取得
- * @param 記事ID
+ * @param post_id
  * @return 最近のトピックスステータス
 */
 function get_topics_status($post_id){
@@ -299,7 +293,7 @@ function get_topics_status($post_id){
 
 /**
  * カスタムフィールドから「ゲームリンク」を取得
- * @param 記事ID
+ * @param post_id
  * @return ゲームリンク
 */
 function get_game_link($post_id){
@@ -328,6 +322,7 @@ function get_game_link($post_id){
 /**
  * ゲットパラメータで、適したタイトルを返却する
  * sort popullar=閲覧数, new=新着 指定なし=おすすめ
+ * @return カテゴリ分類
 */
 function get_cat_title(){
 
@@ -355,6 +350,8 @@ function get_cat_title(){
 /**
  * ゲットパラメータで、適したタブにクラスを付与
  * active popullar=閲覧数, new=新着 recommend=おすすめ
+ * @param $active
+ * @return クラス
 */
 function get_cat_active_class($active){
 
@@ -383,6 +380,8 @@ function get_cat_active_class($active){
 /**
  * ゲットパラメータによって、ナンバリングを付与
  * sort popullar=閲覧数, new=新着 指定なし=おすすめ
+ * @param $cnt
+ * @return ナンバリング
 */
 function get_cat_numbering($cnt){
 
@@ -393,14 +392,111 @@ function get_cat_numbering($cnt){
 	if($sort == "new"){
 		return "";
 	}
+	// 開発環境チェック No.39対応 コメントを外すと100位以降はナンバリングが出力されなくなります
+	// else if ($cnt > 100) {
+	// 	return "";
+	// }
 
 	return '<span class="number">'.$cnt.'位</span>';
 
 }
 
 /**
- * 各順位の更新日を返却
+ * カテゴリページのタイトル<title>を取得
+ * @param $cat_info
+ * @param $wp_query
+ * @return カテゴリタイトル
+*/
+function get_cat_titletag($cat_info,$wp_query){
+	$cat_data = get_option('catTitle_'.intval($cat_info->term_id));
+
+	if($cat_data['title_text']){
+		if(!is_paged()){	// 1ページ目
+			return $cat_data['title_text'];
+		}
+		else{ 				// 2ページ目移行
+			// Xページ目の取得
+			$page_num = get_query_var('paged');
+			// 最大表示数取得
+			$max_disp = get_option('posts_per_page'); 
+			// 頭番号
+			$before   = ( $max_disp * ($page_num-1) ) + 1;
+			
+			// 後番号
+			$remaining_page = $wp_query->found_posts - ($max_disp*($page_num-1));
+			if($remaining_page > $max_disp){
+				$after    = ( $max_disp * ($page_num ) );
+			}
+			else{
+				$after = $wp_query->found_posts;
+			}
+
+			return '（'.$page_num.'ページ目'.'）'.'　'.$cat_data['title_text'].'（'.$before.'位〜'.$after.'位）' ;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * カテゴリページのdescriptionを取得
+ * @param $cat_info
+ * @param $wp_query
+ * @return カテゴリディスクリプション
+*/
+function get_cat_description($cat_info,$wp_query){
+	$cat_data = get_option('catTitle_'.intval($cat_info->term_id));
+
+	
+	if(!is_paged()){	// 1ページ目
+		return $cat_info->description;
+	}
+	else{ 				// 2ページ目移行
+		// Xページ目の取得
+		$page_num = get_query_var('paged');
+		// 最大表示数取得
+		$max_disp = get_option('posts_per_page'); 
+		// 頭番号
+		$before   = ( $max_disp * ($page_num-1) ) + 1;
+		
+		// 後番号
+		$remaining_page = $wp_query->found_posts - ($max_disp*($page_num-1));
+		if($remaining_page > $max_disp){
+			$after    = ( $max_disp * ($page_num ) );
+		}
+		else{
+			$after = $wp_query->found_posts;
+		}
+
+		return '（'.$page_num.'ページ目'.'）'.'　'.$cat_info->description.'（'.$before.'位〜'.$after.'位）' ;
+	}
+
+	return '';
+}
+
+/**
+ * カテゴリページのcanonicalを取得（閲覧数or新作順のみ）
+ * @return canonical
+*/
+function get_cat_canonicaltag($cat){
+	$sort = (isset($_GET["sort"]) && $_GET["sort"] != '') ? $_GET["sort"] : '';
+	$sort = htmlspecialchars($sort, ENT_QUOTES);
+
+	// 閲覧数順 or 新作順
+	if($sort === "popular" || $sort === "new"){
+		return '<link rel="canonical" href="'.get_category_link($cat).'">';
+	}
+	else{
+		return '<link rel="canonical" href="'.get_category_link($cat).'">';	
+	}
+
+	return '';
+}
+
+/**
+ * 各順位の更新日を取得
  * todo:ID決め打ち
+ * @return 順位
 */
 function get_rank_update_date(){
 
@@ -430,6 +526,8 @@ function pre_get_cat_list($query){
 	if ( is_admin() || ! $query->is_main_query() ){
 		return;
 	}
+
+	
 
 	if ( $query->is_category() ) {
 
@@ -471,25 +569,20 @@ function pre_get_cat_list($query){
 			$query->set( 'orderby', 'meta_value_num' );
 			$query->set( 'meta_key', 'recommendRank' );
 			$query->set( 'order', 'ASC' );
-			$query->set( 'meta_value', 'null' );
-			$query->set( 'meta_compare', '!=' );
+			
 		}
 		// 新作順
 		else if($sort == "new"){
 			$query->set( 'orderby', 'meta_value' );
 			$query->set( 'meta_key', 'gameRelease' );
 			$query->set( 'order', 'DESC' );
-			$query->set( 'meta_value', 'null' );
-			$query->set( 'meta_compare', '!=' );
+			
 		}
 		else{
 			$query->set( 'orderby', 'meta_value_num' );
 			$query->set( 'meta_key', 'popularRank' );
 			$query->set( 'order', 'ASC' );
-			$query->set( 'meta_value', 'null' );
-			$query->set( 'meta_compare', '!=' );
 		}
-
 		
 		return;
 	}
@@ -501,25 +594,21 @@ add_action( 'pre_get_posts', 'pre_get_cat_list' );
 
 /**
  * 開始日と終了日を取得する
- * @param 記事ID
+ * @param post_id
 */
 function get_start_end_date($post_id){
 
 	// 開始日（表示用）
 	$start_date = get_post_meta($post_id, 'preStartDate', true);
-	// 開始日（タグ用）
-	$start_date_replace = str_replace('/', '-',$start_date);
 	// 終了日（表示用）
 	$end_date = get_post_meta($post_id, 'preEndDate', true);
-	// 終了日（タグ用）
-	$end_date_replace = str_replace('/', '-',$end_date);
 
 	// 開始日と終了日のどちらも入力されていた場合
 	if($start_date && $end_date){
-		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>〜<time datetime="'.$end_date_replace.'">'.$end_date.'</time>';
+		return $start_date.'〜'.$end_date;
 	}
 	else{
-		return '<time datetime="'.$start_date_replace.'">'.$start_date.'</time>〜';
+		return $start_date.'〜';
 	}
 
 }
@@ -567,36 +656,39 @@ remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
 //ページネーション（一覧ページ）と分割ページ（マルチページ）タグを出力
 ///////////////////////////////////////
 function rel_next_prev_link_tags() {
-  if(is_single() || is_page()) {
-      //1ページを複数に分けた分割ページ（マルチページ）でのタグ出力
-    global $wp_query;
-    $multipage = check_multi_page();
-    if($multipage[0] > 1) {
-      $prev = generate_multipage_url('prev');
-      $next = generate_multipage_url('next');
-      if($prev) {
-        echo '<link rel="prev" href="'.$prev.'" />'.PHP_EOL;
-      }
-      if($next) {
-        echo '<link rel="next" href="'.$next.'" />'.PHP_EOL;
-      }
-    }
-  } else{
-    //トップページやカテゴリページなどのページネーションでのタグ出力
-    global $paged;
-    if ( get_previous_posts_link() ){
-      echo '<link rel="prev" href="'.get_pagenum_link( $paged - 1 ).'" />'.PHP_EOL;
-    }
-    if ( get_next_posts_link() ){
-      echo '<link rel="next" href="'.get_pagenum_link( $paged + 1 ).'" />'.PHP_EOL;
-    }
-  }
+
+	if( !is_category() )
+		return;
+
+	if(is_single() || is_page()) {
+		//1ページを複数に分けた分割ページ（マルチページ）でのタグ出力
+		global $wp_query;
+		$multipage = check_multi_page();
+		if($multipage[0] > 1) {
+			$prev = generate_multipage_url('prev');
+			$next = generate_multipage_url('next');
+			if($prev) {
+				echo '<link rel="prev" href="'.$prev.'" />'.PHP_EOL;
+			}
+			if($next) {
+				echo '<link rel="next" href="'.$next.'" />'.PHP_EOL;
+			}
+		}
+	} else{
+		//トップページやカテゴリページなどのページネーションでのタグ出力
+		global $paged;
+		if ( get_previous_posts_link() ){
+			echo '<link rel="prev" href="'.get_pagenum_link( $paged - 1 ).'" />'.PHP_EOL;
+		}
+		if ( get_next_posts_link() ){
+			echo '<link rel="next" href="'.get_pagenum_link( $paged + 1 ).'" />'.PHP_EOL;
+		}
+	}
 }
 //適切なページのヘッダーにnext/prevを表示
 add_action( 'wp_head', 'rel_next_prev_link_tags' );
 
 //分割ページ（マルチページ）URLの取得
-//参考ページ：http://seophp.net/wordpress-fix-rel-prev-and-rel-next-without-plugin/
 function generate_multipage_url($rel='prev') {
   global $post;
   $url = '';
@@ -670,7 +762,6 @@ add_filter('posts_search','custom_search', 10, 2);
 <?php
 /**
  * 管理画面、カテゴリへカスタムフィールドを追加する
- * @return iOSならtrue それ以外false
 */
 add_action ( 'edit_category_form_fields', 'extra_category_fields');
 function extra_category_fields( $tag ) {

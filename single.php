@@ -3,14 +3,6 @@
 
 <?php
 while (have_posts()) : the_post();
-	// リリース日（表示用）
-	$gameRelease_date = get_post_meta($post->ID, 'gameRelease', true);
-	// リリース日（タグ用）
-	$gameRelease_date_replace = str_replace('/', '-',$gameRelease_date);
-	// 更新日（表示用）
-	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
-	// 更新日（タグ用）
-	$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
 	// ゲームリンク
 	$game_link = get_game_link($post->ID);
 	// ゲーム名
@@ -25,14 +17,14 @@ while (have_posts()) : the_post();
 	<!-- パンくず -->
 	<ul class="breadcrumb u-clearfix">
 		<li><a href="<?php echo esc_url( get_home_url() ); ?>">オンラインゲームPLANET</a></li>
-		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_main_category($post->ID); ?></a></li>
+		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_category_name($post->ID); ?></a></li>
 		<li><a href="<?php echo the_permalink($post->ID); ?>"><?php echo $game_name; ?></a></li>
 	</ul>
 
 	<!-- タイトル -->
 	<h1 class="cat-title"><?php echo $game_name; ?></h1>
 	<div class="wrap-release-date">
-		<span class="time">リリース日：<time datetime="<?php echo $gameRelease_date_replace; ?>"><?php echo $gameRelease_date; ?></time></span>
+		<span class="time">リリース日：<?php echo get_post_meta($post->ID, 'gameRelease', true); ?></span>
 		<?php echo get_release_status($post->ID,"2"); ?>
 	</div>
 	<div class="wrap-label u-mts">
@@ -58,7 +50,7 @@ while (have_posts()) : the_post();
 	</div>
 	<div class="wrap-post-date">
 		<span class="time">最終更新日：<time datetime="<?php the_modified_date('Y-m-d') ?>"><?php the_modified_date('Y/m/d') ?></time></span>
-		<span class="time">投稿日：<time datetime="<?php the_time('Y-m-d'); ?>"><?php the_time('Y/m/d'); ?></time></span>
+		<span class="time">投稿日：<?php the_time('Y/m/d'); ?></span>
 	</div>
 
 
@@ -89,13 +81,15 @@ while (have_posts()) : the_post();
 					</div>
 				</div>
 
+			<?php if( !empty( get_post_meta($post->ID, 'topicsText', true) ) ) : ?>
 				<div class="wrap_topic--single u-clearfix">
 					<span>最新トピックス</span>
-					<div class="time"><time datetime="<?php echo $topics_update_date_replace; ?>"><?php echo $topics_update_date; ?></time></div>
+					<div class="time"><?php echo get_post_meta($post->ID, 'topicsUpdateDate', true); ?></div>
 					<p><?php echo get_post_meta($post->ID, 'topicsText', true); ?></p>
-				</div>
+			</div>
+				<?php endif; ?>
 
-				<a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
+				<a target="_blank" href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
 
 				<div class="mokuji_sp">
 					<h3>目次</h3>
@@ -113,7 +107,7 @@ while (have_posts()) : the_post();
 				<!-- ここにメイン編集が入ります -->
 				<?php the_content(); ?>
 
-				<a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
+				<a target="_blank" href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
 				<address class="address_game"><?php echo get_post_meta($post->ID, 'copy', true); ?></address>
 			</article>
 
@@ -140,7 +134,7 @@ include_once('inc/related-article.php');
 					<li><a href="#">採集などの生活系コンテンツ</a></li>
 					<li><a href="#">生活などのハウジングシステム</a></li>
 				</ul>
-				<a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」公式サイトへ</a>
+				<a target="_blank" href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」公式サイトへ</a>
 			</section>
 		</div><!-- /right-column -->
 	</div><!-- /parent-column -->

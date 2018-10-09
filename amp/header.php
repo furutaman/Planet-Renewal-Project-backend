@@ -1,32 +1,20 @@
+<?php
+// 投稿ID保持
+$post_id = get_the_ID();
+?>
 <!DOCTYPE html>
-<html amp lang="en">
+<html amp lang="ja">
 <head>
 <meta charset="utf-8">
-<link rel="canonical" href="<?php echo get_permalink(); ?>" />
 <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 <?php do_action( 'amp_post_template_head', $this ); ?>
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "NewsArticle",
-    "headline": "Open-source framework for publishing content",
-    "datePublished": "2018-08-28T12:02:41Z",
-    "image": [
-      "logo.jpg"
-    ]
-  }
-</script>
-<script async src="https://cdn.ampproject.org/v0.js"></script>
+
+
 <script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
 <script async custom-element="amp-sidebar" src="https://cdn.ampproject.org/v0/amp-sidebar-0.1.js"></script>
 <script async custom-element="amp-youtube" src="https://cdn.ampproject.org/v0/amp-youtube-0.1.js"></script>
 <script custom-element="amp-animation" src="https://cdn.ampproject.org/v0/amp-animation-0.1.js" async></script>
 <script custom-element="amp-position-observer" src="https://cdn.ampproject.org/v0/amp-position-observer-0.1.js" async></script>
-<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-<meta name="keywords" content="">
-<meta name="description" content="無料で遊べるPCオンラインゲームの2018年最新おすすめランキングや、実際にプレイしてレビュー紹介記事を掲載しています。新作や人気タイトルを中心にMMORPGやFPS／TPS、ブラウザゲームなど協力や対戦が楽しめるネトゲを紹介しているサイトです。">
-<meta name="author" content="プラネットメディア株式会社">
-<title><?php wp_title(''); ?>｜オンラインゲームPLANET</title>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
 <style amp-custom>
@@ -680,6 +668,7 @@ footer ul li {
         <li><a href="/category/smartphone-apps/">スマホゲーム</a></li>
         <li><a href="/category/vr/">VR</a></li>
         <li><a href="/category/steam/">steam</a></li>
+        <li><a href="/category/blockchain/">ブロックチェーン</a></li>
       </ul>
     </nav>
     <form method="get" action="https://example.com/subscribe" target="_top" class="u-ps u-mbl2">

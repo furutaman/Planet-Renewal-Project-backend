@@ -66,14 +66,9 @@ if($attention_query->have_posts()): while($attention_query->have_posts()): $atte
     	<ul class="new-game u-clearfix">
 <?php 	
 	endif; 
-
-	// リリース日（表示用）
-	$release_update_date = get_post_meta($post->ID, 'gameRelease', true);
-	// リリース日（タグ用）
-	$release_update_date_replace = str_replace('/', '-',$release_update_date);
 ?>
 			<li>
-				<span class="time">リリース日：<time datetime="<?php echo $release_update_date_replace; ?>"><?php echo $release_update_date; ?></time></span>
+				<span class="time">リリース日：<?php echo get_post_meta($post->ID, 'gameRelease', true); ?></span>
 				<a href="<?php echo the_permalink($post->ID); ?>"><img src="<?php the_post_thumbnail_url('thumbnails_438x328'); ?>" width="100%"></a>
 				<h3><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
 				<div>
@@ -144,15 +139,10 @@ if($attention_query->have_posts()): while($attention_query->have_posts()): $atte
 		<h2>1ヶ月以内にリリースされたオンラインゲーム</h2>
 <?php 
 	endif;
-
-	// リリース日（表示用）
-	$release_update_date = get_post_meta($post->ID, 'gameRelease', true);
-	// リリース日（タグ用）
-	$release_update_date_replace = str_replace('/', '-',$release_update_date);
 ?>
 		<div class="wrap_topic">
 			<div class="wrap_topic-left">
-				<div class="time no-icon">リリース日：<time datetime="<?php echo $release_update_date_replace; ?>"><?php echo $release_update_date; ?></time></div>
+				<div class="time no-icon">リリース日：<?php echo get_post_meta($post->ID, 'gameRelease', true); ?></div>
 				<h3><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
 				<div>
 					<?php if( get_pc_sp($post->ID) != null): ?>
@@ -196,9 +186,6 @@ $beta_query_args = Array(
 		)
 	),
 	'orderby' => array( 'meta_releaseStatus' => 'DESC', 'meta_preStartDate' => 'DESC' ),
-	// 'orderby' => 'meta_value',
-	// 'meta_key' => 'preStartDate',
-	// 'order' => 'DESC'
 );
 $beta_query_args_args = new WP_Query($beta_query_args);
 

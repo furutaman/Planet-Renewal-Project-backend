@@ -8,25 +8,17 @@ Template Post Type: post
 
 <?php
 if(have_posts()) : while (have_posts()) : the_post();
-	// 更新日（表示用）
-	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
-	// 更新日（タグ用）
-	$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
-	// ゲームリンク
-	$game_link = get_game_link($post->ID);
 	// ゲーム名
 	$game_name = get_post_meta($post->ID, 'gameName', true); 
-	// 公式サイト・リンク
-	$link_to_official = get_link_to_official($post->ID);
-
 	// カテゴリID保存用
 	$cat_ids = [];
+	$
 ?>
 
 	<!-- パンくず -->
 	<ul class="breadcrumb u-clearfix">
 		<li><a href="<?php echo esc_url( get_home_url() ); ?>">オンラインゲームPLANET</a></li>
-		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_main_category($post->ID); ?></a></li>
+		<li><a href="<?php echo get_category_url($post->ID); ?>"><?php echo get_category_name($post->ID); ?></a></li>
 		<li><a href="<?php echo the_permalink($post->ID); ?>"><?php echo $game_name; ?></a></li>
 	</ul>
 
@@ -39,6 +31,8 @@ if(have_posts()) : while (have_posts()) : the_post();
 	<?php 
 		$categorys = get_the_category();
 		foreach ($categorys as $category):
+			if($category->slug == "new")
+					continue;
 			array_push($cat_ids,$category->term_id);
 	?>
 			<a href="<?php echo get_category_link( $category->term_id ); ?>" class="label_large"><?php echo $category->cat_name; ?></a>
@@ -48,7 +42,7 @@ if(have_posts()) : while (have_posts()) : the_post();
 	</div>
 	<div class="wrap-post-date">
 		<span class="time">最終更新日：<time datetime="<?php the_modified_date('Y-m-d') ?>"><?php the_modified_date('Y/m/d') ?></time></span>
-		<span class="time">投稿日：<time datetime="<?php the_time('Y-m-d'); ?>"><?php the_time('Y/m/d'); ?></time></span>
+		<span class="time">投稿日：<?php the_time('Y/m/d'); ?></span>
 	</div>
 
 

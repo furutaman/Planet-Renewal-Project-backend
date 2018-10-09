@@ -52,7 +52,7 @@ if($top_query->have_posts()): while($top_query->have_posts()): $top_query->the_p
 		endif;
 
 		// TOP10用画像取得
-		$top10_image = wp_get_attachment_image_src(get_post_meta($post->ID,'top10Image', true),'thumbnail');
+		$top10_image = wp_get_attachment_image_src(get_post_meta($post->ID,'top10Image', true),'thumbnails_438x328');
 		if($top10_image == false){
 			$top10_image[0] = get_the_post_thumbnail_url( get_the_ID(), 'thumbnails_438x328' );
 		}
@@ -263,19 +263,13 @@ if($right_query->have_posts()): while($right_query->have_posts()): $right_query-
 			<h2>最新トピックス</h2>
 <?php 	
 	endif; 
-
-	// 更新日（表示用）
-	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
-	// 更新日（タグ用）
-	$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
-
 ?>
 			<div class="wrap_topic">
 				<div class="wrap_topic-left">
 			<?php if(get_topics_status($post->ID) != null): ?>
 					<div class="label_topic"><?php echo get_topics_status($post->ID); ?></div>
 			<?php endif; ?>
-					<div class="time"><time datetime="<?php echo $topics_update_date;?>"><?php echo $topics_update_date;?></time></div>
+					<div class="time"><?php echo get_post_meta($post->ID, 'topicsUpdateDate', true);?></div>
 					<h3><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
 					<p><a href="<?php echo the_permalink($post->ID); ?>" class="u-mrs"><?php echo get_post_meta($post->ID, 'topicsText', true); ?></a></p>
 					<div>

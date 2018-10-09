@@ -1,9 +1,11 @@
 <section class="wrap_recommend">
 	<h2>このゲームに興味のある方におすすめオンラインゲーム</h2>	
 <?php
+
 $related_query_args = Array(
 	'post_type' => 'post',
-	'category' => $cat_ids,
+	'category__in' => $cat_ids,
+	'post__not_in' => array($post->ID),
 	'tag' => 'related',
 	'posts_per_page' => 6,
 	'orderby' => 'rand'

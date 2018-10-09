@@ -26,12 +26,6 @@ $total_results = $wp_query->found_posts;
 			<h2>該当オンラインゲーム　<span style="font-size:150%;"><?php echo $total_results ?></span> 件</h2>
 <?php 
 if(have_posts()): while(have_posts()):the_post();
-
-	// リリース日（表示用）
-	$game_release_date = get_post_meta($post->ID, 'gameRelease', true);
-	// リリース（タグ用）
-	$game_release_date_replace = str_replace('/', '-',$game_release_date);
-
 ?>
 			<section class="u-mtl2">
 				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status($post->ID,"3"); ?></h3>
@@ -41,7 +35,7 @@ if(have_posts()): while(have_posts()):the_post();
 						<div class="u-relative">
 							<a href="<?php the_permalink(); ?>"><img src="<?php the_post_thumbnail_url('thumbnails_438x328'); ?>" width="100%"></a>
 						</div>
-						<div class="time no-icon">リリース日：<time datetime="<?php echo $game_release_date_replace;?>"><?php echo $game_release_date;?></time></div>
+						<div class="time no-icon">リリース日：<?php echo get_post_meta($post->ID, 'gameRelease', true); ?></div>
 
 						<div>
 						<?php if( get_pc_sp($post->ID) != null): ?>
@@ -56,7 +50,7 @@ if(have_posts()): while(have_posts()):the_post();
 						<?php
 							$categorys = get_the_category();
 							foreach ($categorys as $category):
-								if($category->slug == "browser-games")
+								if($category->slug == "browser-games" || $category->slug == "new")
 									continue;
 						?>
 							<a href="<?php echo get_category_link( $category->term_id ); ?>" class="label_large"><?php echo $category->cat_name; ?></a>
@@ -116,19 +110,13 @@ if($right_query->have_posts()): while($right_query->have_posts()): $right_query-
 			<h2>最新トピックス</h2>
 <?php 	
 	endif; 
-
-	// 更新日（表示用）
-	$topics_update_date = get_post_meta($post->ID, 'topicsUpdateDate', true);
-	// 更新日（タグ用）
-	$topics_update_date_replace = str_replace('/', '-',$topics_update_date);
 ?>
-
 			<div class="wrap_topic u-mtl2">
 				<div class="wrap_topic-left">
 					<?php if(get_topics_status($post->ID) != null): ?>
 					<div class="label_topic"><?php echo get_topics_status($post->ID); ?></div>
 					<?php endif; ?>
-					<div class="time"><time datetime="<?php echo $topics_update_date;?>"><?php echo $topics_update_date_replace;?></time></div>
+					<div class="time"><?php echo get_post_meta($post->ID, 'topicsUpdateDate', true);?></div>
 					<h3><a href="<?php echo the_permalink($post->ID); ?>"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a></h3>
 					<p><a href="<?php echo the_permalink($post->ID); ?>" class="u-mrs"><?php echo get_post_meta($post->ID, 'topicsText', true); ?></a></p>
 					<div>

@@ -7,15 +7,10 @@ include ( TEMPLATEPATH . '/amp/header.php'); ?>
 <main>
 
 <?php
-if(have_posts()) : while (have_posts()) : the_post();
-  
-  // 投稿ID保持
-  $post_id = get_the_ID();
+$page_template = get_page_template_slug();
 
-  // 更新日（表示用）
-  $topics_update_date = get_post_meta($post_id, 'topicsUpdateDate', true);
-  // 更新日（タグ用）
-  $topics_update_date_replace = str_replace('/', '-',$topics_update_date);
+if(have_posts()) : while (have_posts()) : the_post();
+
   // ゲームリンク
   $game_link = get_game_link($post_id);
   // ゲーム名
@@ -31,22 +26,26 @@ if(have_posts()) : while (have_posts()) : the_post();
 <!-- パンくず -->
   <ul class="breadcrumb u-clearfix">
     <li><a href="<?php echo esc_url( get_home_url() ); ?>">オンラインゲームPLANET</a></li>
-    <li><a href="<?php echo get_category_url($post_id); ?>"><?php echo get_main_category($post_id); ?></a></li>
-    <li><a href="<?php echo the_permalink($post->ID); ?>"><?php echo $game_name; ?></a></li>
+    <li><a href="<?php echo get_category_url($post_id); ?>"><?php echo get_category_name($post_id); ?></a></li>
+    <li><a href="<?php echo the_permalink($post_id); ?>"><?php echo $game_name; ?></a></li>
   </ul>
 
 <!-- タイトル -->
   <h1 class="cat-title"><?php echo $game_name; ?></h1>
   <div class="wrap-release-date">
-    <span class="time">リリース日：<time datetime="<?php echo $topics_update_date_replace; ?>"><?php echo $topics_update_date; ?></time></span>
-    <span class="label_large label_new">新作</span>
+    <span class="time">リリース日：<?php echo get_post_meta($post_id, 'gameRelease', true); ?></span>
+    <?php
+    if ($page_template !== 'single-matome.php') {
+       echo get_release_status($post_id,"2");
+    }
+    ?>
   </div>
   <div class="wrap-label u-mts">
     <?php if( get_pc_sp($post_id) != null): ?>
-    <a href="#" class="label_large label_device"><?php echo get_pc_sp($post_id); ?></a>
+    <span class="label_large label_device"><?php echo get_pc_sp($post_id); ?></span>
     <?php endif; ?>
-    <?php if( get_price_tag($post_id) != null): ?>
-    <a href="#" class="label_large label_fee"><?php echo get_price_tag($post_id); ?></a>
+    <?php if( get_price_tag($post_id) != null && $page_template !== 'single-matome.php'): ?>
+    <span class="label_large label_fee"><?php echo get_price_tag($post_id); ?></span>
     <?php endif; ?>
     <?php 
       $categorys = get_the_category();
@@ -64,7 +63,7 @@ if(have_posts()) : while (have_posts()) : the_post();
   </div>
   <div class="wrap-post-date">
     <span class="time">最終更新日：<time datetime="<?php the_modified_date('Y-m-d') ?>"><?php the_modified_date('Y/m/d') ?></time></span>
-    <span class="time">投稿日：<time datetime="<?php the_time('Y-m-d'); ?>"><?php the_time('Y/m/d'); ?></time></span>
+    <span class="time">投稿日：<?php the_time('Y/m/d'); ?></span>
   </div>
 
 <!-- ページトップ -->
@@ -136,13 +135,15 @@ if(have_posts()) : while (have_posts()) : the_post();
           </div>
         </div>
 
+        <?php if($page_template !== 'single-matome.php'): ?>
+
         <div class="wrap_topic--single u-clearfix">
           <span>最新トピックス</span>
-          <div class="time"><time datetime="<?php echo $topics_update_date_replace; ?>"><?php echo $topics_update_date; ?></time></div>
+          <div class="time"><?php echo get_post_meta($post_id, 'topicsUpdateDate', true); ?></div>
           <p><?php echo get_post_meta($post_id, 'topicsText', true); ?></p>
         </div>
 
-        <a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
+        <a target="_blank" href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
 
         <!-- <div class="mokuji_sp">
           <h3>目次</h3>
@@ -162,8 +163,10 @@ if(have_posts()) : while (have_posts()) : the_post();
           echo $this->get( 'post_amp_content' ); //個別投稿の本文を表示する
         ?>
 
-        <a href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
+        <a target="_blank" href="<?php echo $game_link ?>" class="btn_offical">「<?php echo $game_name; ?>」<?php echo $link_to_official; ?></a>
         <address class="address_game"><?php echo get_post_meta($post_id, 'copy', true); ?></address>
+
+      <<?php endif; ?>
       </article>
 <?php 
 endwhile; endif;

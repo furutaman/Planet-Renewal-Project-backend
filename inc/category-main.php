@@ -25,11 +25,6 @@
 	}
 
 	if(have_posts()): while(have_posts()):the_post();
-	
-		// リリース日（表示用）
-		$game_release_date = get_post_meta($post->ID, 'gameRelease', true);
-		// リリース（タグ用）
-		$game_release_date_replace = str_replace('/', '-',$game_release_date);
 ?>
 			<section>
 				<h3><a href="<?php the_permalink(); ?>" class="name_game"><?php echo get_post_meta($post->ID, 'gameName', true); ?></a><?php echo get_release_status($post->ID,"3"); ?></h3>
@@ -41,7 +36,7 @@
 							<?php echo get_cat_numbering($cnt); ?>
 							
 						</div>
-						<div class="time no-icon">リリース日：<time datetime="<?php echo $game_release_date_replace;?>"><?php echo $game_release_date;?></time></div>
+						<div class="time no-icon">リリース日：<?php echo get_post_meta($post->ID, 'gameRelease', true);?></div>
 						<div>
 						<?php if( get_pc_sp($post->ID) != null): ?>
 							<span class="label_large label_device"><?php echo get_pc_sp($post->ID);?></span>
@@ -55,7 +50,7 @@
 						<?php
 							$categorys = get_the_category();
 							foreach ($categorys as $category):
-								if($category->slug == "browser-games")
+								if($category->slug == "browser-games" || $category->slug == "new")
 									continue;
 						?>
 							<a href="<?php echo get_category_link( $category->term_id ); ?>" class="label_large"><?php echo $category->cat_name; ?></a>
